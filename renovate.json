@@ -1,0 +1,7 @@
+{
+  "extends": ["config:base", "group:allNonMajor", "schedule:weekends"],
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 10,
+  "labels": ["renovate"],
+  "additionalBranchPrefix": "{{parentDir}}-"
+}
