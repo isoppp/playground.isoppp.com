@@ -28,6 +28,7 @@
     "type-check": "tsc --project tsconfig.json --pretty --noEmit",
     "lint": "eslint --ext ts,tsx .",
     "format": "prettier --write './**/*.{js,ts,tsx,css,scss,json,html,graphql,md}' --ignore-path .gitignore",
+    "gen-c": "scaffdog generate react-component",
     "prepare": "husky install"
   },
   "devDependencies": {
@@ -58,6 +59,7 @@
     "msw-storybook-addon": "1.8.0",
     "prettier": "3.0.3",
     "prop-types": "15.8.1",
+    "scaffdog": "3.0.0",
     "storybook": "7.4.6",
     "typescript": "5.2.2",
     "vite": "4.4.11"
