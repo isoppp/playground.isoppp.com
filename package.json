@@ -29,6 +29,7 @@
     "lint": "eslint --ext ts,tsx .",
     "format": "prettier --write './**/*.{js,ts,tsx,css,scss,json,html,graphql,md}' --ignore-path .gitignore",
     "gen-c": "scaffdog generate react-component",
+    "test-ci": "",
     "prepare": "husky install"
   },
   "devDependencies": {
