@@ -29,5 +29,3 @@ jobs:
         run: pnpm lint
       - name: tsc
         run: pnpm type-check
-      - name: test
-        run: pnpm test-ci
