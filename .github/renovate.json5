@@ -1,0 +1,12 @@
+{
+  // import this config
+  "extends": [
+    "github>isoppp/renovate-config"
+  ],
+
+  // enable specific managers(recommend)
+  "enabledManagers": ["npm", "github-actions"],
+
+  // for personal projects
+  "schedule": ["after 9am on saturday", "before 12am on saturday"],
+}
