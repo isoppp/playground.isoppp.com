@@ -14,8 +14,8 @@ import { FC } from 'react'
 
 type Props = {}
 
-export const Foo: FC<Props> = ({}) => {
-return <div>Foo</div>
+export const {{ inputs.name | pascal }}: FC<Props> = ({}) => {
+return <div>{{ inputs.name | pascal }}</div>
 }
 ```
 
@@ -24,7 +24,7 @@ return <div>Foo</div>
 ```markdown
 import { Meta, StoryObj } from '@storybook/react'
 
-import { Foo as Component } from './'
+import { {{ inputs.name | pascal }} as Component } from './'
 
 export default {
 component: Component,
