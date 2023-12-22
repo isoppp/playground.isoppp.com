@@ -1,31 +1,39 @@
-import { DndContext } from '@dnd-kit/core'
-import { FC, useMemo } from 'react'
+import { DndContext, DragMoveEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core'
+import { FC, useState } from 'react'
 
-import { folders } from './data'
-import { flattenList } from './util'
+import { List } from './List'
 
 type Props = {}
 
 export const DnDKit: FC<Props> = ({}) => {
-  const flatItems = useMemo(() => flattenList(folders), [])
+  const [activeId, setActiveId] = useState(null)
   return (
-    <DndContext>
-      <div className="flex flex-col gap-1">
-        {flatItems.map((item) => (
-          <div
-            key={item.id}
-            className={'border py-1 flex items-center gap-4'}
-            style={{
-              paddingLeft: 16 + (item.depth + (item.type === 'item' ? 1 : 0)) * 40 + 'px',
-            }}
-          >
-            <div>handle</div>
-            <div className="font-bold">{item.type.substr(0, 1).toUpperCase()}</div>
-            <div>{item.id}</div>
-            <div>{item.depth}</div>
-          </div>
-        ))}
-      </div>
+    <DndContext
+      onDragStart={handleDragStart}
+      onDragMove={handleDragMove}
+      onDragOver={handleDragOver}
+      onDragEnd={handleDragEnd}
+    >
+      <div>active: {activeId}</div>
+      <List />
     </DndContext>
   )
+
+  function handleDragStart(event: DragStartEvent) {
+    if (!event.active) return
+    setActiveId(event.active.id)
+  }
+
+  function handleDragMove(event: DragMoveEvent) {
+    if (!event.over) return
+    console.log('move', event)
+  }
+
+  function handleDragOver(event: DragOverEvent) {
+    console.log('over', event)
+  }
+
+  function handleDragEnd() {
+    setActiveId(null)
+  }
 }

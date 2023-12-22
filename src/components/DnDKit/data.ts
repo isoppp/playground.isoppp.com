@@ -27,26 +27,26 @@ export const folders: Folder[] = [
   {
     id: 'folder-1',
     childItems: [
-      {
-        id: 'item-1-1',
-      },
-      {
-        id: 'item-1-2',
-      },
+      // {
+      //   id: 'item-1-1',
+      // },
+      // {
+      //   id: 'item-1-2',
+      // },
     ],
     childFolders: [
-      {
-        id: 'folder-1-2',
-        childItems: [
-          {
-            id: 'item-1-2-1',
-          },
-          {
-            id: 'item-1-2-2',
-          },
-        ],
-        childFolders: [],
-      },
+      // {
+      //   id: 'folder-1-2',
+      //   childItems: [
+      //     {
+      //       id: 'item-1-2-1',
+      //     },
+      //     {
+      //       id: 'item-1-2-2',
+      //     },
+      //   ],
+      //   childFolders: [],
+      // },
     ],
   },
   {
