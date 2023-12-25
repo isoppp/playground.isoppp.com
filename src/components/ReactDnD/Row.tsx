@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { Identifier, XYCoord } from 'dnd-core'
 import { FC } from 'react'
 import { useRef } from 'react'
@@ -6,10 +7,27 @@ import { MdDragIndicator } from 'react-icons/md'
 
 import { FlatItem } from './data'
 import { ItemTypes } from './itemTypes'
+
+export type Direction = 'none' | 'up' | 'down'
+export type Position = 'none' | 'top' | 'bottom'
+export type Border = 'top' | 'bottom' | 'surround' | 'none'
+
+export type onDraggingData = {
+  flatItem: FlatItem
+  originalIndex: number
+  targetIndex: number
+  direction: Direction
+  position: Position
+  isMiddle: boolean
+}
 type Props = {
   flatItem: FlatItem
   index: number
-  moveFlatItem: (flatItem: FlatItem, originalIndex: number, targetIndex: number) => void
+  lastActiveIndex: null | number
+  lastDirection: null | onDraggingData['direction']
+  onDragging: (data: onDraggingData) => void
+  onDrop: () => void
+  border?: Border
 }
 
 type DragItem = {
@@ -19,7 +37,7 @@ type DragItem = {
   raw: FlatItem
 }
 
-export const Row: FC<Props> = ({ flatItem, index, moveFlatItem }) => {
+export const Row: FC<Props> = ({ flatItem, index, lastActiveIndex, lastDirection, onDragging, onDrop, border }) => {
   const ref = useRef<HTMLDivElement>(null)
   const [{ handlerId }, drop] = useDrop<DragItem, void, { handlerId: Identifier | null }>({
     accept: ItemTypes.FOLDER,
@@ -33,17 +51,14 @@ export const Row: FC<Props> = ({ flatItem, index, moveFlatItem }) => {
         return
       }
       const dragItemIndex = item.index
+      const activeIndex = lastActiveIndex ?? dragItemIndex
       const hoverIndex = index
-
-      // Don't replace items with themselves
-      if (dragItemIndex === hoverIndex) {
-        return
-      }
 
       // Determine rectangle on screen
       const hoverBoundingRect = ref.current?.getBoundingClientRect()
 
       // Get vertical middle
+      const hoverBoundingHeight = hoverBoundingRect.bottom - hoverBoundingRect.top
       const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
 
       // Determine mouse position
@@ -52,35 +67,51 @@ export const Row: FC<Props> = ({ flatItem, index, moveFlatItem }) => {
       // Get pixels to the top
       const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top
 
-      // Only perform the move when the mouse has crossed half of the items height
-      // When dragging downwards, only move when the cursor is below 50%
-      // When dragging upwards, only move when the cursor is above 50%
-
-      // Dragging downwards
-      if (dragItemIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-        return
+      let position: Position = 'none'
+      let isMiddle = false
+      if (hoverClientY < hoverBoundingHeight * 0.6 && hoverClientY > hoverBoundingHeight * 0.4) {
+        isMiddle = true
       }
 
-      // Dragging upwards
-      if (dragItemIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-        return
+      // set position
+      if (hoverClientY >= hoverMiddleY) {
+        position = 'bottom'
+      }
+      if (hoverClientY <= hoverMiddleY) {
+        position = 'top'
+      }
+
+      const isMoved = lastActiveIndex != null && lastDirection != null
+      let direction: onDraggingData['direction'] = isMoved ? lastDirection : 'none'
+      // Dragging downwards
+      if (activeIndex < hoverIndex) {
+        direction = 'down'
+      }
+
+      // Dragging upwards and hovering at top of the item
+      if (activeIndex > hoverIndex) {
+        direction = 'up'
       }
 
       // Time to actually perform the action
-      moveFlatItem(item.raw, dragItemIndex, hoverIndex)
-
-      // Note: we're mutating the monitor item here!
-      // Generally it's better to avoid mutations,
-      // but it's good here for the sake of performance
-      // to avoid expensive index searches.
-      // item.index = hoverIndex
+      onDragging({
+        flatItem: item.raw,
+        direction,
+        position,
+        originalIndex: dragItemIndex,
+        targetIndex: hoverIndex,
+        isMiddle,
+      })
+    },
+    drop() {
+      onDrop()
     },
   })
 
   const [{ isDragging }, drag, preview] = useDrag({
     type: ItemTypes.FOLDER,
     item: () => {
-      return { id: flatItem.id, index }
+      return { id: flatItem.id, index, raw: flatItem }
     },
     collect: (monitor: any) => ({
       isDragging: monitor.isDragging(),
@@ -91,21 +122,28 @@ export const Row: FC<Props> = ({ flatItem, index, moveFlatItem }) => {
   preview(drop(ref))
 
   return (
-    <div
-      ref={ref}
-      data-handler-id={handlerId}
-      className={'bg-white border py-1 flex items-center gap-4'}
-      style={{
-        opacity,
-        paddingLeft: 16 + flatItem.depth * 40 + 'px',
-      }}
-    >
-      <div ref={drag} className="flex items-center">
-        <MdDragIndicator />
+    <div className="py-0.5">
+      <div
+        ref={ref}
+        data-handler-id={handlerId}
+        className={clsx([
+          'relative bg-white border py-1 flex items-center gap-4',
+          border === 'surround' && 'shadow-[inset_0_0_0_3px_#3b82f6]',
+        ])}
+        style={{
+          opacity,
+          paddingLeft: 16 + flatItem.depth * 40 + 'px',
+        }}
+      >
+        {border === 'top' && <div className="absolute -top-1 left-0 right-0 h-1 bg-blue-500" />}
+        {border === 'bottom' && <div className="absolute -bottom-1 left-0 right-0 h-1 bg-blue-500" />}
+        <div ref={drag} className="flex items-center">
+          <MdDragIndicator />
+        </div>
+        <div className="font-bold">{flatItem.type.substr(0, 1).toUpperCase()}</div>
+        <div>id: {flatItem.id}</div>
+        <div>depth: {flatItem.depth}</div>
       </div>
-      <div className="font-bold">{flatItem.type.substr(0, 1).toUpperCase()}</div>
-      <div>id: {flatItem.id}</div>
-      <div>depth: {flatItem.depth}</div>
     </div>
   )
 }

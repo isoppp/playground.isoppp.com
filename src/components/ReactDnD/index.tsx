@@ -8,8 +8,10 @@ type Props = {}
 
 export const ReactDnD: FC<Props> = ({}) => {
   return (
-    <DndProvider backend={HTML5Backend}>
-      <List />
-    </DndProvider>
+    <div className="p-1 bg-gray-100">
+      <DndProvider backend={HTML5Backend}>
+        <List />
+      </DndProvider>
+    </div>
   )
 }

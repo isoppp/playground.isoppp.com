@@ -25,48 +25,27 @@ export type FlatItem =
       rawItem: Item
     }
 
+const dRandomId = () => 'd-' + Math.random().toString(32).substring(4)
+const pRandomId = () => 'd-' + Math.random().toString(32).substring(4)
+
+function createFolder(props: { id?: string; childProjectCount: number; childFolderProjectCounts?: number[] }): Folder {
+  const { id, childProjectCount, childFolderProjectCounts } = props
+  const did = id ?? dRandomId()
+  return {
+    id: did,
+    parentId: null,
+    childItems: Array(childProjectCount)
+      .fill(0)
+      .map(() => ({ id: pRandomId(), parentId: did })),
+    childFolders: childFolderProjectCounts?.map((count) => createFolder({ id, childProjectCount: count })) ?? [],
+  }
+}
+
 export const folders: Folder[] = [
-  {
-    id: 'folder-1',
-    parentId: null,
-    childItems: [
-      {
-        id: 'item-1-1',
-        parentId: 'folder-1',
-      },
-      {
-        id: 'item-1-2',
-        parentId: 'folder-1',
-      },
-    ],
-    childFolders: [
-      {
-        id: 'folder-1-2',
-        parentId: 'folder-1',
-        childItems: [
-          {
-            id: 'item-1-2-1',
-            parentId: 'folder-1-2',
-          },
-          {
-            id: 'item-1-2-2',
-            parentId: 'folder-1-2',
-          },
-        ],
-        childFolders: [],
-      },
-    ],
-  },
-  {
-    id: 'folder-2',
-    parentId: null,
-    childItems: [],
-    childFolders: [],
-  },
-  {
-    id: 'folder-3',
-    parentId: null,
-    childItems: [],
-    childFolders: [],
-  },
+  // createFolder({childProjectCount: 0, childFolderProjectCounts: [0, 0]}),
+  createFolder({ childProjectCount: 0, childFolderProjectCounts: [] }),
+  createFolder({ childProjectCount: 2, childFolderProjectCounts: [2, 1, 0] }),
+  createFolder({ childProjectCount: 0, childFolderProjectCounts: [1, 0] }),
+  createFolder({ childProjectCount: 0, childFolderProjectCounts: [0, 0] }),
+  // createFolder({childProjectCount: 1, childFolderProjectCounts: [1, 1]}),
 ]
