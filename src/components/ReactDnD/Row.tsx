@@ -6,8 +6,8 @@ import { useDrag, useDrop } from 'react-dnd'
 import { MdDragIndicator } from 'react-icons/md'
 import { MdArrowForwardIos } from 'react-icons/md'
 
+import { ITEM_TYPE } from './constants'
 import { FlatItem } from './data'
-import { ItemTypes } from './itemTypes'
 
 export type Direction = 'none' | 'up' | 'down'
 export type Position = 'none' | 'top' | 'bottom'
@@ -29,6 +29,7 @@ type Props = {
   onUpdateClientOffset: (clientOffset: XYCoord) => void
   onToggleFolder: () => void
   isFolderOpen?: boolean
+  isDraggingChild: boolean
 }
 
 type DragItem = {
@@ -47,10 +48,11 @@ export const Row: FC<Props> = ({
   onUpdateClientOffset,
   onToggleFolder,
   isFolderOpen,
+  isDraggingChild,
 }) => {
   const ref = useRef<HTMLDivElement>(null)
   const [{ handlerId }, drop] = useDrop<DragItem, void, { handlerId: Identifier | null }>({
-    accept: ItemTypes.FOLDER,
+    accept: ITEM_TYPE.ITEM,
     collect(monitor) {
       return {
         handlerId: monitor.getHandlerId(),
@@ -106,7 +108,7 @@ export const Row: FC<Props> = ({
   })
 
   const [{ isDragging }, drag, preview] = useDrag({
-    type: ItemTypes.FOLDER,
+    type: ITEM_TYPE.ITEM,
     item: () => {
       return { id: flatItem.id, index, raw: flatItem }
     },
@@ -115,7 +117,7 @@ export const Row: FC<Props> = ({
     }),
   })
 
-  const opacity = isDragging ? 0.5 : 1
+  const opacity = isDragging || isDraggingChild ? 0.5 : 1
   preview(drop(ref))
 
   return (

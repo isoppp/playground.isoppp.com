@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react'
 
-import { ReactDnD as Component } from './'
+import { ReactDnD as Component } from './ReactDnD'
 
 export default {
   component: Component,
