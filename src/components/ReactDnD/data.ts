@@ -47,10 +47,10 @@ function createFolder(props: {
 }
 
 export const folders: Folder[] = [
-  // createFolder({childProjectCount: 0, childFolderProjectCounts: [0, 0]}),
+  createFolder({ childProjectCount: 0, childFolderProjectCounts: [0, 0] }),
   createFolder({ childProjectCount: 0, childFolderProjectCounts: [] }),
   createFolder({ childProjectCount: 2, childFolderProjectCounts: [2, 1, 0] }),
   createFolder({ childProjectCount: 0, childFolderProjectCounts: [1, 0] }),
-  createFolder({ childProjectCount: 0, childFolderProjectCounts: [0, 0] }),
-  // createFolder({childProjectCount: 1, childFolderProjectCounts: [1, 1]}),
+  createFolder({ childProjectCount: 0, childFolderProjectCounts: [0, 1] }),
+  createFolder({ childProjectCount: 1, childFolderProjectCounts: [1, 1] }),
 ]

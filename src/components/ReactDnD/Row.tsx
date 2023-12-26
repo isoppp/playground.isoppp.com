@@ -25,7 +25,7 @@ type Props = {
   index: number
   onDragging: (data: onDraggingData) => void
   onDrop: () => void
-  border?: Border
+  borderState?: { borderType: Border; depth: number }
   onUpdateClientOffset: (clientOffset: XYCoord) => void
   onToggleFolder: () => void
   isFolderOpen?: boolean
@@ -44,7 +44,7 @@ export const Row: FC<Props> = ({
   index,
   onDragging,
   onDrop,
-  border,
+  borderState,
   onUpdateClientOffset,
   onToggleFolder,
   isFolderOpen,
@@ -125,15 +125,29 @@ export const Row: FC<Props> = ({
       <div
         className={clsx([
           'relative bg-white py-1 flex items-center gap-4',
-          border === 'surround' && 'shadow-[inset_0_0_0_3px_#3b82f6]',
+          borderState?.borderType === 'surround' && 'shadow-[inset_0_0_0_3px_#3b82f6]',
         ])}
         style={{
           opacity,
           paddingLeft: 16 + flatItem.depth * 40 + 'px',
         }}
       >
-        {border === 'top' && <div className="absolute -top-1 left-0 right-0 h-1 bg-blue-500  z-10" />}
-        {border === 'bottom' && <div className="absolute -bottom-1 left-0 right-0 h-1 bg-blue-500 z-10" />}
+        {borderState?.borderType === 'top' && (
+          <div
+            className="absolute -top-1 left-0 right-0 h-1 bg-blue-500  z-10"
+            style={{
+              left: borderState.depth * 40 + 'px',
+            }}
+          />
+        )}
+        {borderState?.borderType === 'bottom' && (
+          <div
+            className="absolute -bottom-1 left-0 right-0 h-1 bg-blue-500 z-10"
+            style={{
+              left: borderState.depth * 40 + 'px',
+            }}
+          />
+        )}
         <div ref={drag} className="flex items-center">
           <MdDragIndicator />
         </div>

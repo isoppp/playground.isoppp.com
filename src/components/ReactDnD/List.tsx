@@ -21,7 +21,7 @@ export const List: FC<Props> = ({ folders }) => {
     onUpdateClientOffset,
     direction,
     resetState,
-    borderType,
+    moveTargetState,
     onDragging,
   } = useDragAndDrop(flatItems)
 
@@ -44,7 +44,7 @@ export const List: FC<Props> = ({ folders }) => {
                   index={i}
                   onDragging={onDragging}
                   onDrop={resetState}
-                  border={showBorder ? borderType : 'none'}
+                  borderState={showBorder ? moveTargetState : undefined}
                   onUpdateClientOffset={onUpdateClientOffset}
                   onToggleFolder={() => onToggleFolder(flatItem.id)}
                   isFolderOpen={flatItem.type === 'folder' && openFolderIds.includes(flatItem.id)}
@@ -56,7 +56,7 @@ export const List: FC<Props> = ({ folders }) => {
         </div>
       </div>
       <div className="fixed right-0 top-0 bg-gray-100 whitespace-pre-wrap z-[100]">
-        {JSON.stringify({ direction, dnd }, null, 2)}
+        {JSON.stringify({ moveTargetState, direction, dnd }, null, 2)}
       </div>
     </div>
   )
