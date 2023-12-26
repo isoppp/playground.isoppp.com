@@ -4,6 +4,7 @@ import { FC } from 'react'
 import { useRef } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import { MdDragIndicator } from 'react-icons/md'
+import { MdArrowForwardIos } from 'react-icons/md'
 
 import { FlatItem } from './data'
 import { ItemTypes } from './itemTypes'
@@ -26,6 +27,8 @@ type Props = {
   onDrop: () => void
   border?: Border
   onUpdateClientOffset: (clientOffset: XYCoord) => void
+  onToggleFolder: () => void
+  isFolderOpen?: boolean
 }
 
 type DragItem = {
@@ -35,7 +38,16 @@ type DragItem = {
   raw: FlatItem
 }
 
-export const Row: FC<Props> = ({ flatItem, index, onDragging, onDrop, border, onUpdateClientOffset }) => {
+export const Row: FC<Props> = ({
+  flatItem,
+  index,
+  onDragging,
+  onDrop,
+  border,
+  onUpdateClientOffset,
+  onToggleFolder,
+  isFolderOpen,
+}) => {
   const ref = useRef<HTMLDivElement>(null)
   const [{ handlerId }, drop] = useDrop<DragItem, void, { handlerId: Identifier | null }>({
     accept: ItemTypes.FOLDER,
@@ -123,6 +135,13 @@ export const Row: FC<Props> = ({ flatItem, index, onDragging, onDrop, border, on
         <div ref={drag} className="flex items-center">
           <MdDragIndicator />
         </div>
+        {flatItem.type === 'folder' && (
+          <div className="flex items-center">
+            <button type="button" onClick={onToggleFolder} className={clsx([isFolderOpen && 'rotate-90'])}>
+              <MdArrowForwardIos />
+            </button>
+          </div>
+        )}
         <div>{index}</div>
         <div className="font-bold">{flatItem.type.substr(0, 1).toUpperCase()}</div>
         <div>id: {flatItem.id}</div>

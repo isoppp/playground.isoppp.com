@@ -9,6 +9,35 @@ type Props = {}
 
 export const List: FC<Props> = ({}) => {
   const flatItems = useMemo(() => flattenList(folders), [])
+  const [openFolderIds, setOpenFolderIds] = useState<string[]>([])
+  const onToggleFolder = useCallback(
+    (folderId: string) => {
+      if (openFolderIds.includes(folderId)) {
+        setOpenFolderIds((old) => old.filter((id) => id !== folderId))
+      } else {
+        setOpenFolderIds((old) => [...old, folderId])
+      }
+    },
+    [openFolderIds],
+  )
+  const toggleAllFolders = useCallback(() => {
+    if (openFolderIds.length === 0) {
+      setOpenFolderIds(flatItems.filter((flatItem) => flatItem.type === 'folder').map((flatItem) => flatItem.id))
+    } else {
+      setOpenFolderIds([])
+    }
+  }, [flatItems, openFolderIds.length])
+
+  const filteredFlatItems = useMemo(() => {
+    return flatItems.filter((flatItem) => {
+      if (flatItem.type === 'folder') {
+        return !flatItem.rawFolder.parentId || openFolderIds.includes(flatItem.rawFolder.parentId)
+      } else {
+        return !flatItem.rawItem.parentId || openFolderIds.includes(flatItem.rawItem.parentId)
+      }
+    })
+  }, [flatItems, openFolderIds])
+
   const [dnd, setDnd] = useState<
     | null
     | ({
@@ -101,23 +130,30 @@ export const List: FC<Props> = ({}) => {
   }, [])
 
   return (
-    <>
-      <div className="flex flex-col">
-        {flatItems.map((flatItem, i) => (
-          <Fragment key={flatItem.id}>
-            <Row
-              key={flatItem.id}
-              flatItem={flatItem}
-              index={i}
-              onDragging={moveFlatItem}
-              onDrop={resetState}
-              border={borderTypes[i] ?? 'none'}
-              onUpdateClientOffset={onUpdateClientOffset}
-            />
-          </Fragment>
-        ))}
+    <div>
+      <button type="button" onClick={toggleAllFolders}>
+        Toggle All Folders
+      </button>
+      <div className="p-1 bg-gray-100">
+        <div className="flex flex-col">
+          {filteredFlatItems.map((flatItem, i) => (
+            <Fragment key={flatItem.id}>
+              <Row
+                key={flatItem.id}
+                flatItem={flatItem}
+                index={i}
+                onDragging={moveFlatItem}
+                onDrop={resetState}
+                border={borderTypes[i] ?? 'none'}
+                onUpdateClientOffset={onUpdateClientOffset}
+                onToggleFolder={() => onToggleFolder(flatItem.id)}
+                isFolderOpen={flatItem.type === 'folder' && openFolderIds.includes(flatItem.id)}
+              />
+            </Fragment>
+          ))}
+        </div>
       </div>
       <div className="fixed right-0 top-0 bg-gray-100 whitespace-pre-wrap z-[100]">{JSON.stringify(dnd, null, 2)}</div>
-    </>
+    </div>
   )
 }
