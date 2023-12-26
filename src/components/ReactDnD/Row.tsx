@@ -16,18 +16,16 @@ export type onDraggingData = {
   flatItem: FlatItem
   originalIndex: number
   targetIndex: number
-  direction: Direction
   position: Position
   isMiddle: boolean
 }
 type Props = {
   flatItem: FlatItem
   index: number
-  lastActiveIndex: null | number
-  lastDirection: null | onDraggingData['direction']
   onDragging: (data: onDraggingData) => void
   onDrop: () => void
   border?: Border
+  onUpdateClientOffset: (clientOffset: XYCoord) => void
 }
 
 type DragItem = {
@@ -37,7 +35,7 @@ type DragItem = {
   raw: FlatItem
 }
 
-export const Row: FC<Props> = ({ flatItem, index, lastActiveIndex, lastDirection, onDragging, onDrop, border }) => {
+export const Row: FC<Props> = ({ flatItem, index, onDragging, onDrop, border, onUpdateClientOffset }) => {
   const ref = useRef<HTMLDivElement>(null)
   const [{ handlerId }, drop] = useDrop<DragItem, void, { handlerId: Identifier | null }>({
     accept: ItemTypes.FOLDER,
@@ -51,7 +49,6 @@ export const Row: FC<Props> = ({ flatItem, index, lastActiveIndex, lastDirection
         return
       }
       const dragItemIndex = item.index
-      const activeIndex = lastActiveIndex ?? dragItemIndex
       const hoverIndex = index
 
       // Determine rectangle on screen
@@ -63,6 +60,7 @@ export const Row: FC<Props> = ({ flatItem, index, lastActiveIndex, lastDirection
 
       // Determine mouse position
       const clientOffset = monitor.getClientOffset()
+      onUpdateClientOffset(clientOffset as XYCoord)
 
       // Get pixels to the top
       const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top
@@ -81,22 +79,9 @@ export const Row: FC<Props> = ({ flatItem, index, lastActiveIndex, lastDirection
         position = 'top'
       }
 
-      const isMoved = lastActiveIndex != null && lastDirection != null
-      let direction: onDraggingData['direction'] = isMoved ? lastDirection : 'none'
-      // Dragging downwards
-      if (activeIndex < hoverIndex) {
-        direction = 'down'
-      }
-
-      // Dragging upwards and hovering at top of the item
-      if (activeIndex > hoverIndex) {
-        direction = 'up'
-      }
-
       // Time to actually perform the action
       onDragging({
         flatItem: item.raw,
-        direction,
         position,
         originalIndex: dragItemIndex,
         targetIndex: hoverIndex,
@@ -122,12 +107,10 @@ export const Row: FC<Props> = ({ flatItem, index, lastActiveIndex, lastDirection
   preview(drop(ref))
 
   return (
-    <div className="py-0.5">
+    <div className="py-0.5" ref={ref} data-handler-id={handlerId}>
       <div
-        ref={ref}
-        data-handler-id={handlerId}
         className={clsx([
-          'relative bg-white border py-1 flex items-center gap-4',
+          'relative bg-white py-1 flex items-center gap-4',
           border === 'surround' && 'shadow-[inset_0_0_0_3px_#3b82f6]',
         ])}
         style={{
@@ -135,11 +118,12 @@ export const Row: FC<Props> = ({ flatItem, index, lastActiveIndex, lastDirection
           paddingLeft: 16 + flatItem.depth * 40 + 'px',
         }}
       >
-        {border === 'top' && <div className="absolute -top-1 left-0 right-0 h-1 bg-blue-500" />}
-        {border === 'bottom' && <div className="absolute -bottom-1 left-0 right-0 h-1 bg-blue-500" />}
+        {border === 'top' && <div className="absolute -top-1 left-0 right-0 h-1 bg-blue-500  z-10" />}
+        {border === 'bottom' && <div className="absolute -bottom-1 left-0 right-0 h-1 bg-blue-500 z-10" />}
         <div ref={drag} className="flex items-center">
           <MdDragIndicator />
         </div>
+        <div>{index}</div>
         <div className="font-bold">{flatItem.type.substr(0, 1).toUpperCase()}</div>
         <div>id: {flatItem.id}</div>
         <div>depth: {flatItem.depth}</div>

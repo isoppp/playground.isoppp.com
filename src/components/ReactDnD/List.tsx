@@ -1,7 +1,8 @@
+import { XYCoord } from 'dnd-core'
 import { FC, Fragment, useCallback, useMemo, useState } from 'react'
 
 import { FlatItem, folders } from './data'
-import { onDraggingData, Row } from './Row'
+import { Direction, onDraggingData, Row } from './Row'
 import { flattenList } from './util'
 
 type Props = {}
@@ -12,23 +13,58 @@ export const List: FC<Props> = ({}) => {
     | null
     | ({
         originalItem: FlatItem
-      } & Pick<onDraggingData, 'direction' | 'position' | 'isMiddle' | 'targetIndex'>)
+      } & Pick<onDraggingData, 'position' | 'isMiddle' | 'targetIndex'>)
   >(null)
+  const [clientOffsetY, setClientOffsetY] = useState<null | XYCoord['y']>(null)
+  const [direction, setDirection] = useState<Direction>('none')
+
+  const onUpdateClientOffset = useCallback(
+    (newClientOffset: XYCoord) => {
+      const threshold = 24
+      if (direction === 'none' && !clientOffsetY) {
+        setClientOffsetY(newClientOffset.y)
+      } else if (direction) {
+        if (direction === 'up') {
+          setClientOffsetY((oldY) => (oldY ? Math.min(oldY, newClientOffset.y) : null))
+        } else if (direction === 'down') {
+          setClientOffsetY((oldY) => (oldY ? Math.max(oldY, newClientOffset.y) : null))
+        }
+      }
+
+      if (clientOffsetY) {
+        if (clientOffsetY - newClientOffset.y > threshold) {
+          setDirection('up')
+          setClientOffsetY(newClientOffset.y)
+        } else if (newClientOffset.y - clientOffsetY > threshold) {
+          setDirection('down')
+          setClientOffsetY(newClientOffset.y)
+        }
+      }
+    },
+    [clientOffsetY, direction],
+  )
+
   const moveFlatItem = useCallback(
-    ({ flatItem, originalIndex, targetIndex, direction, position, isMiddle }: onDraggingData) => {
+    ({ flatItem, originalIndex, targetIndex, position, isMiddle }: onDraggingData) => {
       if (originalIndex === targetIndex) {
         setDnd(null)
       } else {
-        setDnd({
-          originalItem: flatItem,
-          direction,
-          position,
-          targetIndex,
-          isMiddle,
-        })
+        if (
+          dnd?.originalItem.id !== flatItem.id ||
+          dnd?.position !== position ||
+          dnd?.targetIndex !== targetIndex ||
+          dnd?.isMiddle !== isMiddle
+        ) {
+          setDnd({
+            originalItem: flatItem,
+            position,
+            targetIndex,
+            isMiddle,
+          })
+        }
       }
     },
-    [],
+    [dnd?.isMiddle, dnd?.originalItem.id, dnd?.position, dnd?.targetIndex],
   )
 
   const borderTypes = useMemo(() => {
@@ -39,7 +75,6 @@ export const List: FC<Props> = ({}) => {
     return flatItems.map((flatItem, i) => {
       if (!dnd || dnd?.targetIndex !== i) return 'none'
 
-      const direction = dnd?.direction ?? 'none'
       const position = dnd?.position ?? 'none'
       if (dnd.originalItem.type === 'item' && flatItem.type === 'folder') {
         if (dnd.isMiddle) {
@@ -57,7 +92,14 @@ export const List: FC<Props> = ({}) => {
       }
       return 'none'
     })
-  }, [dnd, flatItems])
+  }, [direction, dnd, flatItems])
+
+  const resetState = useCallback(() => {
+    setDnd(null)
+    setDirection('none')
+    setClientOffsetY(null)
+  }, [])
+
   return (
     <>
       <div className="flex flex-col">
@@ -67,16 +109,15 @@ export const List: FC<Props> = ({}) => {
               key={flatItem.id}
               flatItem={flatItem}
               index={i}
-              lastActiveIndex={dnd?.targetIndex ?? null}
-              lastDirection={dnd?.direction ?? null}
               onDragging={moveFlatItem}
-              onDrop={() => setDnd(null)}
+              onDrop={resetState}
               border={borderTypes[i] ?? 'none'}
+              onUpdateClientOffset={onUpdateClientOffset}
             />
           </Fragment>
         ))}
       </div>
-      <div className="pre-wrap">{JSON.stringify(dnd, null, 2)}</div>
+      <div className="fixed right-0 top-0 bg-gray-100 whitespace-pre-wrap z-[100]">{JSON.stringify(dnd, null, 2)}</div>
     </>
   )
 }
