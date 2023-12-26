@@ -137,7 +137,11 @@ export const Row: FC<Props> = ({
         </div>
         {flatItem.type === 'folder' && (
           <div className="flex items-center">
-            <button type="button" onClick={onToggleFolder} className={clsx([isFolderOpen && 'rotate-90'])}>
+            <button
+              type="button"
+              onClick={onToggleFolder}
+              className={clsx(['flex items-center', isFolderOpen && 'rotate-90'])}
+            >
               <MdArrowForwardIos />
             </button>
           </div>

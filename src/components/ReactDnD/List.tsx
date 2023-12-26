@@ -6,7 +6,7 @@ import { Direction, onDraggingData, Row } from './Row'
 import { flattenList } from './util'
 
 type Props = {}
-
+console.log(folders)
 export const List: FC<Props> = ({}) => {
   const flatItems = useMemo(() => flattenList(folders), [])
   const [openFolderIds, setOpenFolderIds] = useState<string[]>([])
@@ -96,32 +96,51 @@ export const List: FC<Props> = ({}) => {
     [dnd?.isMiddle, dnd?.originalItem.id, dnd?.position, dnd?.targetIndex],
   )
 
-  const borderTypes = useMemo(() => {
-    if (!dnd || !dnd?.targetIndex) return []
-    const prevItem = flatItems[dnd.targetIndex - 1]
-    const nextItem = flatItems[dnd.targetIndex - 1]
+  const borderType = useMemo(() => {
+    if (!dnd || dnd?.targetIndex == null) return 'none'
 
-    return flatItems.map((flatItem, i) => {
-      if (!dnd || dnd?.targetIndex !== i) return 'none'
+    const flatItem = filteredFlatItems[dnd.targetIndex]
+    if (!flatItem) return 'none'
 
-      const position = dnd?.position ?? 'none'
-      if (dnd.originalItem.type === 'item' && flatItem.type === 'folder') {
-        if (dnd.isMiddle) {
+    const prevItem = filteredFlatItems[dnd.targetIndex - 1]
+    // const nextItem = filteredFlatItems[dnd.targetIndex - 1]
+
+    const isUp = direction === 'up'
+    const isDown = direction === 'down'
+
+    const isPositionTop = dnd.position === 'top'
+    const isPositionBottom = dnd.position === 'bottom'
+
+    if (dnd.originalItem.type === 'item') {
+      if (flatItem.type === 'folder') {
+        if (dnd.isMiddle || (isUp && isPositionBottom) || (isDown && isPositionTop)) {
           return 'surround'
-        } else if (direction === 'up' && position === 'top' && prevItem) {
-          return 'top'
-        } else if (direction === 'down' && position === 'bottom' && nextItem) {
+        } else if (isUp) {
+          return prevItem ? 'top' : flatItem.type === 'folder' ? 'surround' : 'none'
+        } else if (isDown) {
           return 'bottom'
         }
-        return 'surround'
-      } else if (direction.startsWith('up')) {
+      } else if (isUp) {
         return 'top'
-      } else if (direction.startsWith('down')) {
+      } else if (isDown) {
         return 'bottom'
       }
-      return 'none'
-    })
-  }, [direction, dnd, flatItems])
+    } else if (dnd.originalItem.type === 'folder') {
+      if (flatItem.type === 'folder') {
+        if (dnd.isMiddle || (isUp && isPositionBottom) || (isDown && isPositionTop)) {
+          return 'surround'
+        } else if (isUp) {
+          return 'top'
+        } else if (isDown) {
+          return 'bottom'
+        }
+      } else if (isUp) {
+        return 'top'
+      } else if (isDown) {
+        return 'bottom'
+      }
+    }
+  }, [direction, dnd, filteredFlatItems])
 
   const resetState = useCallback(() => {
     setDnd(null)
@@ -144,7 +163,7 @@ export const List: FC<Props> = ({}) => {
                 index={i}
                 onDragging={moveFlatItem}
                 onDrop={resetState}
-                border={borderTypes[i] ?? 'none'}
+                border={dnd && dnd.targetIndex === i ? borderType : 'none'}
                 onUpdateClientOffset={onUpdateClientOffset}
                 onToggleFolder={() => onToggleFolder(flatItem.id)}
                 isFolderOpen={flatItem.type === 'folder' && openFolderIds.includes(flatItem.id)}
@@ -153,7 +172,9 @@ export const List: FC<Props> = ({}) => {
           ))}
         </div>
       </div>
-      <div className="fixed right-0 top-0 bg-gray-100 whitespace-pre-wrap z-[100]">{JSON.stringify(dnd, null, 2)}</div>
+      <div className="fixed right-0 top-0 bg-gray-100 whitespace-pre-wrap z-[100]">
+        {JSON.stringify({ dnd, direction }, null, 2)}
+      </div>
     </div>
   )
 }
