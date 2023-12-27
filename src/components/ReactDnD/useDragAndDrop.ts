@@ -282,19 +282,26 @@ export const useDragAndDrop = (flatItems: FlatItem[]) => {
       // })
 
       if (nextItem && dnd.originalItem.type === nextItem?.type && nextItem.depth === depth) {
-        // console.log('1')
         newOrder = nextItem.raw.order
         newParentId = nextItem.raw.parentId
       } else if (prevItem && dnd.originalItem.type === prevItem?.type && prevItem.depth === depth) {
-        // console.log('2')
         newOrder = prevItem.raw.order + 1
         newParentId = prevItem.raw.parentId
+      } else if (prevItem && prevItem.depth + 1 === depth) {
+        // 閉じているフォルダの次位置で子になる場合
+        const lastChildReverseIndex = findLastIndex(flatItems, (item) => {
+          return dnd.originalItem.type === item?.type && item?.raw.parentId === prevItem.raw.id
+        })
+        const lastChild = flatItems[lastChildReverseIndex]
+
+        newOrder = lastChild ? lastChild.raw.order + 1 : MIN_ORDER
+        newParentId = lastChild ? lastChild.raw.parentId : prevItem?.id ?? null
       } else {
-        // console.log('3')
         const lastChildReverseIndex = findLastIndex(flatItems, (item) => {
           return dnd.originalItem.type === item?.type && depth === item.depth
         })
         const lastChild = flatItems[lastChildReverseIndex]
+
         newOrder = lastChild ? lastChild.raw.order + 1 : MIN_ORDER
         newParentId = lastChild ? lastChild.raw.parentId : prevItem?.id ?? null
       }
@@ -303,7 +310,7 @@ export const useDragAndDrop = (flatItems: FlatItem[]) => {
     const insertBefore = flatItems.find(
       (item) =>
         item.type === dnd.originalItem.type &&
-        item.raw.parentId === removePrefix(newParentId ?? '') &&
+        item.raw.parentId === (newParentId ? removePrefix(newParentId) : null) &&
         item.raw.order === newOrder,
     )
 
