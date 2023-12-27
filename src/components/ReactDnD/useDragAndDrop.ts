@@ -49,7 +49,6 @@ export const useDragAndDrop = (flatItems: FlatItem[]) => {
       if (openFolderIds.includes(flatItemId)) {
         // フォルダを閉じる場合、その子フォルダのIDも収集して除外する
         const childFolderIds = collectChildFolderIds(flatItemId, flatItems)
-        console.log(childFolderIds)
         setOpenFolderIds((old) => old.filter((id) => id !== flatItemId && !childFolderIds.includes(id)))
       } else {
         setOpenFolderIds((old) => [...old, flatItemId])
