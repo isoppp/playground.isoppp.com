@@ -1,7 +1,7 @@
 import { FOLDER_PREFIX, ITEM_PREFIX } from './constants'
 import { FlatItem, Folder } from './data'
 
-export function flattenList(folders: Folder[], depth = 0, parentId: string | null = null): FlatItem[] {
+export function flattenList(folders: Folder[], depth = 0): FlatItem[] {
   const flatList: FlatItem[] = []
 
   folders
@@ -11,8 +11,6 @@ export function flattenList(folders: Folder[], depth = 0, parentId: string | nul
         type: 'folder',
         id: FOLDER_PREFIX + folder.id,
         depth,
-        order: folder.order,
-        parentId,
         raw: folder,
       })
 
@@ -23,13 +21,11 @@ export function flattenList(folders: Folder[], depth = 0, parentId: string | nul
             type: 'item',
             id: ITEM_PREFIX + item.id,
             depth: depth + 1,
-            order: item.order,
-            parentId: folder.id,
             raw: item,
           })
         })
 
-      flatList.push(...flattenList(folder.childFolders, depth + 1, folder.id))
+      flatList.push(...flattenList(folder.childFolders, depth + 1))
     })
 
   return flatList
@@ -58,23 +54,23 @@ export function unflattenList(flatList: FlatItem[]): Folder[] {
   })
 
   flatList.forEach((flatItem) => {
-    if (flatItem.type === 'item' && flatItem.parentId) {
-      folderMap[flatItem.parentId]?.childItems.push(flatItem.raw)
+    if (flatItem.type === 'item' && flatItem.raw.parentId) {
+      folderMap[flatItem.raw.parentId]?.childItems.push(flatItem.raw)
     }
   })
 
   return rootFolders
 }
 
-export const getAllChildItems = (folderId: string, items: FlatItem[]): string[] => {
+export const getAllChildFlatItemIds = (folderRawId: string, items: FlatItem[]): string[] => {
   let childItemIds: string[] = []
 
   items.forEach((item) => {
-    if (item.type === 'folder' && item.raw.parentId === folderId) {
+    if (item.type === 'folder' && item.raw.parentId === folderRawId) {
       // 子フォルダとその子アイテムのIDを取得
       childItemIds.push(item.id) // フォルダ自身も含める
-      childItemIds = childItemIds.concat(getAllChildItems(item.id, items))
-    } else if (item.type === 'item' && item.raw.parentId === folderId) {
+      childItemIds = childItemIds.concat(getAllChildFlatItemIds(item.raw.id, items))
+    } else if (item.type === 'item' && item.raw.parentId === folderRawId) {
       // アイテムの場合、リストに追加
       childItemIds.push(item.id)
     }
@@ -97,7 +93,7 @@ export const collectChildFolderIds = (folderId: string, flatItems: FlatItem[]): 
 
   const findChildFolders = (currentId: string) => {
     flatItems.forEach((item) => {
-      if (item.type === 'folder' && item.parentId === currentId) {
+      if (item.type === 'folder' && item.raw.parentId === removePrefix(currentId)) {
         childFolderIds.push(item.id)
         findChildFolders(item.id)
       }

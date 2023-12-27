@@ -16,16 +16,12 @@ export type FlatItem =
       type: 'folder'
       id: string // folderなら folder-, itemなら item- で始まる文字列(prefixは変数化）
       depth: number
-      order: number
-      parentId: string | null
       raw: Folder
     }
   | {
       type: 'item'
       id: string // folderなら folder-, itemなら item- で始まる文字列(prefixは変数化）
       depth: number
-      order: number
-      parentId: string | null
       raw: Item
     }
 

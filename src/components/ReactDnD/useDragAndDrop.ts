@@ -4,7 +4,7 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import { DRAG_DIRECTION_THRESHOLD, FOLDER_PREFIX, MIN_ORDER } from './constants'
 import { FlatItem } from './data'
 import { Border, onDraggingData, Position } from './Row'
-import { collectChildFolderIds, findLastIndex, getAllChildItems } from './util'
+import { collectChildFolderIds, findLastIndex, getAllChildFlatItemIds, removePrefix } from './util'
 
 export type Direction = 'none' | 'up' | 'down'
 
@@ -41,20 +41,21 @@ export const useDragAndDrop = (flatItems: FlatItem[]) => {
 
   const draggingChildIds = useMemo(() => {
     if (!dnd?.originalItem?.id) return []
-    return getAllChildItems(dnd?.originalItem?.id, flatItems)
-  }, [dnd?.originalItem?.id, flatItems])
+    return getAllChildFlatItemIds(dnd?.originalItem?.raw.id, flatItems)
+  }, [dnd?.originalItem?.id, dnd?.originalItem?.raw.id, flatItems])
 
   const onToggleFolder = useCallback(
-    (folderId: string) => {
-      if (openFolderIds.includes(folderId)) {
+    (flatItemId: string) => {
+      if (openFolderIds.includes(flatItemId)) {
         // フォルダを閉じる場合、その子フォルダのIDも収集して除外する
-        const childFolderIds = collectChildFolderIds(folderId, flatItems)
-        setOpenFolderIds((old) => old.filter((id) => id !== folderId && !childFolderIds.includes(id)))
+        const childFolderIds = collectChildFolderIds(flatItemId, flatItems)
+        console.log(childFolderIds)
+        setOpenFolderIds((old) => old.filter((id) => id !== flatItemId && !childFolderIds.includes(id)))
       } else {
-        setOpenFolderIds((old) => [...old, folderId])
+        setOpenFolderIds((old) => [...old, flatItemId])
       }
     },
-    [openFolderIds],
+    [flatItems, openFolderIds],
   )
   const toggleAllFolders = useCallback(() => {
     if (openFolderIds.length === 0) {
@@ -266,10 +267,10 @@ export const useDragAndDrop = (flatItems: FlatItem[]) => {
       // filterから探さなくて大丈夫か？
       const lastChildReverseIndex = findLastIndex(
         flatItems,
-        (item) => item?.type === dnd.originalItem.type && item?.parentId === targetItem.id,
+        (item) => item?.type === dnd.originalItem.type && item?.raw.parentId === removePrefix(targetItem.id),
       )
       const lastChild = flatItems[lastChildReverseIndex]
-      newOrder = lastChild ? lastChild.order + 1 : MIN_ORDER
+      newOrder = lastChild ? lastChild.raw.order + 1 : MIN_ORDER
     } else if (moveTargetState.borderType === 'top' || moveTargetState.borderType === 'bottom') {
       const { depth, prevItem, nextItem } = moveTargetState
 
@@ -283,25 +284,28 @@ export const useDragAndDrop = (flatItems: FlatItem[]) => {
 
       if (nextItem && dnd.originalItem.type === nextItem?.type && nextItem.depth === depth) {
         // console.log('1')
-        newOrder = nextItem.order
-        newParentId = nextItem.parentId
+        newOrder = nextItem.raw.order
+        newParentId = nextItem.raw.parentId
       } else if (prevItem && dnd.originalItem.type === prevItem?.type && prevItem.depth === depth) {
         // console.log('2')
-        newOrder = prevItem.order + 1
-        newParentId = prevItem.parentId
+        newOrder = prevItem.raw.order + 1
+        newParentId = prevItem.raw.parentId
       } else {
         // console.log('3')
         const lastChildReverseIndex = findLastIndex(flatItems, (item) => {
           return dnd.originalItem.type === item?.type && depth === item.depth
         })
         const lastChild = flatItems[lastChildReverseIndex]
-        newOrder = lastChild ? lastChild.order + 1 : MIN_ORDER
-        newParentId = lastChild ? lastChild.parentId : prevItem?.id ?? null
+        newOrder = lastChild ? lastChild.raw.order + 1 : MIN_ORDER
+        newParentId = lastChild ? lastChild.raw.parentId : prevItem?.id ?? null
       }
     }
 
     const insertBefore = flatItems.find(
-      (item) => item.type === dnd.originalItem.type && item.parentId === newParentId && item.order === newOrder,
+      (item) =>
+        item.type === dnd.originalItem.type &&
+        item.raw.parentId === removePrefix(newParentId ?? '') &&
+        item.raw.order === newOrder,
     )
 
     console.log({

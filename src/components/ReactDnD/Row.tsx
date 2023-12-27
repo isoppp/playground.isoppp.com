@@ -155,7 +155,7 @@ export const Row: FC<Props> = ({
         <div className="font-bold">{flatItem.type.substr(0, 1).toUpperCase()}</div>
         <div>id: {flatItem.id}</div>
         <div>depth: {flatItem.depth}</div>
-        <div>order: {flatItem.order}</div>
+        <div>order: {flatItem.raw.order}</div>
       </div>
     </div>
   )
