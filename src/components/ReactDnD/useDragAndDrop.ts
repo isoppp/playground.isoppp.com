@@ -323,6 +323,7 @@ export const useDragAndDrop = (flatItems: FlatItem[], setFlatItems: (items: Flat
     direction,
     onDragging,
     onDrop,
+    onCancel: resetState,
     moveTargetState,
     onUpdateClientOffset,
   }

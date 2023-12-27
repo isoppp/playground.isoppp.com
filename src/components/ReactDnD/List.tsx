@@ -22,6 +22,7 @@ export const List: FC<Props> = ({ folders, setFolders }) => {
     onUpdateClientOffset,
     direction,
     onDrop,
+    onCancel,
     moveTargetState,
     onDragging,
   } = useDragAndDrop(flatItems, (newFlatItems) => setFolders(unflattenList(newFlatItems)))
@@ -45,6 +46,7 @@ export const List: FC<Props> = ({ folders, setFolders }) => {
                   index={i}
                   onDragging={onDragging}
                   onDrop={onDrop}
+                  onCancel={onCancel}
                   borderState={showBorder ? moveTargetState : undefined}
                   onUpdateClientOffset={onUpdateClientOffset}
                   onToggleFolder={() => onToggleFolder(flatItem.id)}

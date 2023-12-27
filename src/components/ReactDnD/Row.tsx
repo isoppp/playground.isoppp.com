@@ -24,6 +24,7 @@ type Props = {
   index: number
   onDragging: (data: onDraggingData) => void
   onDrop: () => void
+  onCancel: () => void
   borderState?: { borderType: Border; depth: number }
   onUpdateClientOffset: (clientOffset: XYCoord) => void
   onToggleFolder: () => void
@@ -43,6 +44,7 @@ export const Row: FC<Props> = ({
   index,
   onDragging,
   onDrop,
+  onCancel,
   borderState,
   onUpdateClientOffset,
   onToggleFolder,
@@ -101,9 +103,6 @@ export const Row: FC<Props> = ({
         isMiddle,
       })
     },
-    drop() {
-      onDrop()
-    },
   })
 
   const [{ isDragging }, drag, preview] = useDrag({
@@ -114,6 +113,10 @@ export const Row: FC<Props> = ({
     collect: (monitor: any) => ({
       isDragging: monitor.isDragging(),
     }),
+    end: (item, monitor) => {
+      const didDrop = monitor.didDrop()
+      didDrop ? onDrop() : onCancel()
+    },
   })
 
   const opacity = isDragging || isDraggingChild ? 0.5 : 1
