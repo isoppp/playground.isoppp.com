@@ -1,10 +1,12 @@
 import { XYCoord } from 'dnd-core'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 
-import { DRAG_DIRECTION_THRESHOLD } from './constants'
+import { DRAG_DIRECTION_THRESHOLD, MIN_ORDER } from './constants'
 import { FlatItem } from './data'
 import { Border, onDraggingData, Position } from './Row'
-import { getAllChildItems } from './util'
+import { findLastIndex, getAllChildItems } from './util'
+
+export type Direction = 'none' | 'up' | 'down'
 
 type DragAndDropState = {
   originalItem: FlatItem
@@ -14,30 +16,25 @@ type DragAndDropState = {
   isMiddle: boolean
 }
 
-export const useDragAndDrop = (flatItems: FlatItem[]) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const useDragAndDrop = (flatItems: FlatItem[], setFlatItems: (items: FlatItem[]) => void) => {
   const [openFolderIds, setOpenFolderIds] = useState<string[]>([])
   const [dnd, setDnd] = useState<DragAndDropState | null>(null)
-  const [clientOffsetY, setClientOffsetY] = useState<number | null>(null)
-  const [startClientOffsetX, setStartClientOffsetX] = useState<number | null>(null)
-  const [clientOffsetX, setClientOffsetX] = useState<number | null>(null)
-  const [direction, setDirection] = useState<'up' | 'down' | 'none'>('none')
+  const [realtimeOffset, setRealtimeOffset] = useState<XYCoord | null>(null)
+  const clientOffsetY = useRef<number | null>(null)
+  const offsetXByDndUpdate = useRef<number | null>(null)
+  const [direction, setDirection] = useState<Direction>('none')
 
   const resetState = useCallback(() => {
     setDnd(null)
-    setClientOffsetY(null)
-    setClientOffsetX(null)
-    setStartClientOffsetX(null)
+    setRealtimeOffset(null)
+    clientOffsetY.current = null
+    offsetXByDndUpdate.current = null
     setDirection('none')
   }, [])
 
   const filteredFlatItems = useMemo(() => {
-    return flatItems.filter((flatItem) => {
-      if (flatItem.type === 'folder') {
-        return !flatItem.rawFolder.parentId || openFolderIds.includes(flatItem.rawFolder.parentId)
-      } else {
-        return !flatItem.rawItem.parentId || openFolderIds.includes(flatItem.rawItem.parentId)
-      }
-    })
+    return flatItems.filter((flatItem) => !flatItem.raw.parentId || openFolderIds.includes(flatItem.raw.parentId))
   }, [flatItems, openFolderIds])
 
   const draggingChildIds = useMemo(() => {
@@ -65,29 +62,35 @@ export const useDragAndDrop = (flatItems: FlatItem[]) => {
 
   const onUpdateClientOffset = useCallback(
     (newClientOffset: XYCoord) => {
-      if (startClientOffsetX == null) setStartClientOffsetX(newClientOffset.x)
-      setClientOffsetX(newClientOffset.x)
-      if (direction === 'none' && !clientOffsetY) {
-        setClientOffsetY(newClientOffset.y)
+      setRealtimeOffset(newClientOffset)
+
+      if (offsetXByDndUpdate.current === null) {
+        offsetXByDndUpdate.current = newClientOffset.x
+      }
+
+      if (direction === 'none' && clientOffsetY.current === null) {
+        clientOffsetY.current = newClientOffset.y
       } else if (direction) {
         if (direction === 'up') {
-          setClientOffsetY((oldY) => (oldY ? Math.min(oldY, newClientOffset.y) : null))
+          clientOffsetY.current =
+            clientOffsetY.current !== null ? Math.min(clientOffsetY.current, newClientOffset.y) : null
         } else if (direction === 'down') {
-          setClientOffsetY((oldY) => (oldY ? Math.max(oldY, newClientOffset.y) : null))
+          clientOffsetY.current =
+            clientOffsetY.current !== null ? Math.max(clientOffsetY.current, newClientOffset.y) : null
         }
       }
 
-      if (clientOffsetY) {
-        if (clientOffsetY - newClientOffset.y > DRAG_DIRECTION_THRESHOLD) {
+      if (clientOffsetY.current !== null) {
+        if (clientOffsetY.current - newClientOffset.y > DRAG_DIRECTION_THRESHOLD) {
           setDirection('up')
-          setClientOffsetY(newClientOffset.y)
-        } else if (newClientOffset.y - clientOffsetY > DRAG_DIRECTION_THRESHOLD) {
+          clientOffsetY.current = newClientOffset.y
+        } else if (newClientOffset.y - clientOffsetY.current > DRAG_DIRECTION_THRESHOLD) {
           setDirection('down')
-          setClientOffsetY(newClientOffset.y)
+          clientOffsetY.current = newClientOffset.y
         }
       }
     },
-    [clientOffsetY, direction],
+    [clientOffsetY, direction, offsetXByDndUpdate],
   )
 
   const onDragging = useCallback(
@@ -105,12 +108,18 @@ export const useDragAndDrop = (flatItems: FlatItem[]) => {
           targetIndex,
           isMiddle,
         })
+        offsetXByDndUpdate.current = realtimeOffset?.x ?? null
       }
     },
-    [dnd?.isMiddle, dnd?.originalItem.id, dnd?.position, dnd?.targetIndex],
+    [dnd?.isMiddle, dnd?.originalItem.id, dnd?.position, dnd?.targetIndex, realtimeOffset?.x],
   )
 
-  const moveTargetState = useMemo<{ borderType: Border; depth: number }>(() => {
+  const moveTargetState = useMemo<{
+    borderType: Border
+    depth: number
+    prevItem?: FlatItem
+    nextItem?: FlatItem
+  }>(() => {
     const invalidResponse = { borderType: 'none', depth: 0 } as const
     if (!dnd || dnd?.targetIndex == null) return invalidResponse
 
@@ -125,13 +134,6 @@ export const useDragAndDrop = (flatItems: FlatItem[]) => {
 
     const prevItem = isDown ? targetItem : filteredFlatItems[dnd.targetIndex - 1]
     const nextItem = isUp ? targetItem : filteredFlatItems[dnd.targetIndex + 1]
-
-    console.log({
-      prev: prevItem?.id,
-      next: nextItem?.id,
-      prevItem,
-      nextItem,
-    })
 
     function getBorderType() {
       if (!dnd || !targetItem) return 'none'
@@ -184,11 +186,20 @@ export const useDragAndDrop = (flatItems: FlatItem[]) => {
       } else if (dnd.originalItem.type === 'folder') {
         if (!prevItem || !nextItem) return 0
 
+        if (prevItem.type === 'item' && nextItem.type === 'folder') {
+          return Math.min(prevItem.depth, nextItem.depth)
+        }
         if (prevItem.type === 'item') {
-          return prevItem.depth - 1
-        } else if (prevItem.type === 'folder' && nextItem.type === 'folder') {
           return prevItem.depth
-        } else if (prevItem?.type === 'folder') {
+        }
+        if (prevItem.type === 'folder' && nextItem.type === 'folder') {
+          if (prevItem.depth === nextItem.depth) {
+            return prevItem.depth
+          } else {
+            return nextItem.depth
+          }
+        }
+        if (prevItem?.type === 'folder') {
           return prevItem.depth + 1
         }
       }
@@ -224,7 +235,7 @@ export const useDragAndDrop = (flatItems: FlatItem[]) => {
     function getDepth(borderType: Border) {
       if (!dnd || !targetItem || borderType === 'none' || borderType === 'surround') return 0
       const candidateDepth =
-        dnd.originalItem.depth + Math.floor(((clientOffsetX ?? 0) - (startClientOffsetX ?? 0)) / 40)
+        dnd.originalItem.depth + Math.floor(((realtimeOffset?.x ?? 0) - (offsetXByDndUpdate.current ?? 0)) / 40)
       return Math.min(Math.max(getMinDepth(), candidateDepth), getMaxDepth())
     }
 
@@ -232,8 +243,73 @@ export const useDragAndDrop = (flatItems: FlatItem[]) => {
     return {
       borderType: getBorderType(),
       depth: getDepth(borderType),
+      prevItem,
+      nextItem,
     }
-  }, [clientOffsetX, direction, dnd, filteredFlatItems, startClientOffsetX])
+  }, [direction, dnd, filteredFlatItems, realtimeOffset?.x])
+
+  const onDrop = useCallback(() => {
+    if (!dnd) return
+
+    const targetItem = filteredFlatItems[dnd.targetIndex]
+    if (!targetItem) return
+
+    let newParentId: string | null = null
+    let newOrder = MIN_ORDER
+
+    if (moveTargetState.borderType === 'surround') {
+      newParentId = targetItem.id
+      // filterから探さなくて大丈夫か？
+      const lastChildReverseIndex = findLastIndex(
+        flatItems,
+        (item) => item?.type === dnd.originalItem.type && item?.parentId === targetItem.id,
+      )
+      const lastChild = flatItems[lastChildReverseIndex]
+      newOrder = lastChild ? lastChild.order + 1 : MIN_ORDER
+    } else if (moveTargetState.borderType === 'top' || moveTargetState.borderType === 'bottom') {
+      const { depth, prevItem, nextItem } = moveTargetState
+
+      // console.log({
+      //   depth,
+      //   nextDepth: nextItem?.depth,
+      //   nextId: nextItem?.id,
+      //   prevDepth: prevItem?.depth,
+      //   prevId: prevItem?.id,
+      // })
+
+      if (nextItem && dnd.originalItem.type === nextItem?.type && nextItem.depth === depth) {
+        // console.log('1')
+        newOrder = nextItem.order
+        newParentId = nextItem.parentId
+      } else if (prevItem && dnd.originalItem.type === prevItem?.type && prevItem.depth === depth) {
+        // console.log('2')
+        newOrder = prevItem.order + 1
+        newParentId = prevItem.parentId
+      } else {
+        // console.log('3')
+        const lastChildReverseIndex = findLastIndex(flatItems, (item) => {
+          return dnd.originalItem.type === item?.type && depth === item.depth
+        })
+        const lastChild = flatItems[lastChildReverseIndex]
+        newOrder = lastChild ? lastChild.order + 1 : MIN_ORDER
+        newParentId = lastChild ? lastChild.parentId : prevItem?.id ?? null
+      }
+    }
+
+    const insertBefore = flatItems.find(
+      (item) => item.type === dnd.originalItem.type && item.parentId === newParentId && item.order === newOrder,
+    )
+
+    console.log({
+      type: dnd.originalItem.type,
+      id: dnd.originalItem.raw.id,
+      parentId: newParentId,
+      order: newOrder,
+      insertBeforeId: insertBefore?.id ?? null,
+    })
+
+    resetState()
+  }, [dnd, filteredFlatItems, flatItems, moveTargetState, resetState])
 
   return {
     filteredFlatItems,
@@ -244,7 +320,7 @@ export const useDragAndDrop = (flatItems: FlatItem[]) => {
     dnd,
     direction,
     onDragging,
-    resetState,
+    onDrop,
     moveTargetState,
     onUpdateClientOffset,
   }

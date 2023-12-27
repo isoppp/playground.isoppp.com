@@ -3,13 +3,14 @@ import { FC, Fragment, useMemo } from 'react'
 import { Folder } from './data'
 import { Row } from './Row'
 import { useDragAndDrop } from './useDragAndDrop'
-import { flattenList } from './util'
+import { flattenList, unflattenList } from './util'
 
 type Props = {
   folders: Folder[]
+  setFolders: (folders: Folder[]) => void
 }
 
-export const List: FC<Props> = ({ folders }) => {
+export const List: FC<Props> = ({ folders, setFolders }) => {
   const flatItems = useMemo(() => flattenList(folders), [folders])
   const {
     filteredFlatItems,
@@ -20,10 +21,10 @@ export const List: FC<Props> = ({ folders }) => {
     dnd,
     onUpdateClientOffset,
     direction,
-    resetState,
+    onDrop,
     moveTargetState,
     onDragging,
-  } = useDragAndDrop(flatItems)
+  } = useDragAndDrop(flatItems, (newFlatItems) => setFolders(unflattenList(newFlatItems)))
 
   return (
     <div>
@@ -43,7 +44,7 @@ export const List: FC<Props> = ({ folders }) => {
                   flatItem={flatItem}
                   index={i}
                   onDragging={onDragging}
-                  onDrop={resetState}
+                  onDrop={onDrop}
                   borderState={showBorder ? moveTargetState : undefined}
                   onUpdateClientOffset={onUpdateClientOffset}
                   onToggleFolder={() => onToggleFolder(flatItem.id)}
@@ -55,7 +56,7 @@ export const List: FC<Props> = ({ folders }) => {
           })}
         </div>
       </div>
-      <div className="fixed right-0 top-0 bg-gray-100 whitespace-pre-wrap z-[100]">
+      <div className="p-2 fixed right-0 top-0 bg-gray-100 whitespace-pre-wrap z-[100]">
         {JSON.stringify({ moveTargetState, direction, dnd }, null, 2)}
       </div>
     </div>

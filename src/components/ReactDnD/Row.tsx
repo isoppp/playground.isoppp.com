@@ -9,7 +9,6 @@ import { MdArrowForwardIos } from 'react-icons/md'
 import { ITEM_TYPE } from './constants'
 import { FlatItem } from './data'
 
-export type Direction = 'none' | 'up' | 'down'
 export type Position = 'none' | 'top' | 'bottom'
 export type Border = 'top' | 'bottom' | 'surround' | 'none'
 
@@ -166,6 +165,7 @@ export const Row: FC<Props> = ({
         <div className="font-bold">{flatItem.type.substr(0, 1).toUpperCase()}</div>
         <div>id: {flatItem.id}</div>
         <div>depth: {flatItem.depth}</div>
+        <div>order: {flatItem.order}</div>
       </div>
     </div>
   )

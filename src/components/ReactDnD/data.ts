@@ -1,10 +1,12 @@
 export type Item = {
   id: string
+  order: number
   parentId: string | null
 }
 export type Folder = {
   id: string
   parentId: string | null
+  order: number
   childItems: Item[]
   childFolders: Folder[]
 }
@@ -14,15 +16,17 @@ export type FlatItem =
       type: 'folder'
       id: string // folderなら folder-, itemなら item- で始まる文字列(prefixは変数化）
       depth: number
-      rawFolder: Folder
-      rawItem: undefined
+      order: number
+      parentId: string | null
+      raw: Folder
     }
   | {
       type: 'item'
       id: string // folderなら folder-, itemなら item- で始まる文字列(prefixは変数化）
       depth: number
-      rawFolder: undefined
-      rawItem: Item
+      order: number
+      parentId: string | null
+      raw: Item
     }
 
 const dRandomId = () => 'd-' + Math.random().toString(32).substring(4)
@@ -32,25 +36,33 @@ function createFolder(props: {
   parentId?: string
   childProjectCount: number
   childFolderProjectCounts?: number[]
+  order?: number
 }): Folder {
-  const { parentId, childProjectCount, childFolderProjectCounts } = props
+  const { parentId, childProjectCount, childFolderProjectCounts, order = 0 } = props
   const did = dRandomId()
+
   return {
     id: did,
     parentId: parentId ?? null,
-    childItems: Array(childProjectCount)
-      .fill(0)
-      .map(() => ({ id: pRandomId(), parentId: did })),
+    order,
+    childItems: Array.from({ length: childProjectCount }, (_, index) => ({
+      id: pRandomId(),
+      parentId: did,
+      order: index,
+    })),
     childFolders:
-      childFolderProjectCounts?.map((count) => createFolder({ parentId: did, childProjectCount: count })) ?? [],
+      childFolderProjectCounts?.map((count, index) =>
+        createFolder({ parentId: did, childProjectCount: count, order: index }),
+      ) ?? [],
   }
 }
 
 export const folders: Folder[] = [
-  createFolder({ childProjectCount: 0, childFolderProjectCounts: [0, 0] }),
-  createFolder({ childProjectCount: 0, childFolderProjectCounts: [] }),
-  createFolder({ childProjectCount: 2, childFolderProjectCounts: [2, 1, 0] }),
-  createFolder({ childProjectCount: 0, childFolderProjectCounts: [1, 0] }),
-  createFolder({ childProjectCount: 0, childFolderProjectCounts: [0, 1] }),
-  createFolder({ childProjectCount: 1, childFolderProjectCounts: [1, 1] }),
-]
+  { childProjectCount: 0, childFolderProjectCounts: [0, 0, 0, 0, 0] },
+  { childProjectCount: 0, childFolderProjectCounts: [0, 0] },
+  { childProjectCount: 0, childFolderProjectCounts: [] },
+  { childProjectCount: 2, childFolderProjectCounts: [2, 1, 0] },
+  { childProjectCount: 0, childFolderProjectCounts: [1, 0] },
+  { childProjectCount: 0, childFolderProjectCounts: [0, 1] },
+  { childProjectCount: 1, childFolderProjectCounts: [1, 1] },
+].map((props, index) => createFolder({ ...props, order: index }))
