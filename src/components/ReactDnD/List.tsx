@@ -3,14 +3,13 @@ import { FC, Fragment, useMemo } from 'react'
 import { Folder } from './data'
 import { Row } from './Row'
 import { useDragAndDrop } from './useDragAndDrop'
-import { flattenList, unflattenList } from './util'
+import { flattenList } from './util'
 
 type Props = {
   folders: Folder[]
-  setFolders: (folders: Folder[]) => void
 }
 
-export const List: FC<Props> = ({ folders, setFolders }) => {
+export const List: FC<Props> = ({ folders }) => {
   const flatItems = useMemo(() => flattenList(folders), [folders])
   const {
     filteredFlatItems,
@@ -25,7 +24,7 @@ export const List: FC<Props> = ({ folders, setFolders }) => {
     onCancel,
     moveTargetState,
     onDragging,
-  } = useDragAndDrop(flatItems, (newFlatItems) => setFolders(unflattenList(newFlatItems)))
+  } = useDragAndDrop(flatItems)
 
   return (
     <div>

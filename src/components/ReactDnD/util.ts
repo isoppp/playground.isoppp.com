@@ -1,3 +1,4 @@
+import { FOLDER_PREFIX, ITEM_PREFIX } from './constants'
 import { FlatItem, Folder } from './data'
 
 export function flattenList(folders: Folder[], depth = 0, parentId: string | null = null): FlatItem[] {
@@ -8,7 +9,7 @@ export function flattenList(folders: Folder[], depth = 0, parentId: string | nul
     .forEach((folder) => {
       flatList.push({
         type: 'folder',
-        id: folder.id,
+        id: FOLDER_PREFIX + folder.id,
         depth,
         order: folder.order,
         parentId,
@@ -20,7 +21,7 @@ export function flattenList(folders: Folder[], depth = 0, parentId: string | nul
         .forEach((item) => {
           flatList.push({
             type: 'item',
-            id: item.id,
+            id: ITEM_PREFIX + item.id,
             depth: depth + 1,
             order: item.order,
             parentId: folder.id,
@@ -105,4 +106,8 @@ export const collectChildFolderIds = (folderId: string, flatItems: FlatItem[]): 
 
   findChildFolders(folderId)
   return childFolderIds
+}
+
+export const removePrefix = (id: string): string => {
+  return id.replace(FOLDER_PREFIX, '').replace(ITEM_PREFIX, '')
 }

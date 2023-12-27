@@ -29,8 +29,7 @@ export type FlatItem =
       raw: Item
     }
 
-const dRandomId = () => 'd-' + Math.random().toString(32).substring(4)
-const pRandomId = () => 'd-' + Math.random().toString(32).substring(4)
+const randomId = () => Math.random().toString(32).substring(6)
 
 function createFolder(props: {
   parentId?: string
@@ -39,14 +38,14 @@ function createFolder(props: {
   order?: number
 }): Folder {
   const { parentId, childProjectCount, childFolderProjectCounts, order = 0 } = props
-  const did = dRandomId()
+  const did = randomId()
 
   return {
     id: did,
     parentId: parentId ?? null,
     order,
     childItems: Array.from({ length: childProjectCount }, (_, index) => ({
-      id: pRandomId(),
+      id: randomId(),
       parentId: did,
       order: index,
     })),

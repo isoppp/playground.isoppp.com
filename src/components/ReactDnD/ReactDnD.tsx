@@ -8,10 +8,10 @@ import { List } from './List'
 type Props = {}
 
 export const ReactDnD: FC<Props> = ({}) => {
-  const [foldersState, setFolders] = useState<Folder[]>(folders)
+  const [foldersState] = useState<Folder[]>(folders)
   return (
     <DndProvider backend={HTML5Backend}>
-      <List folders={foldersState} setFolders={setFolders} />
+      <List folders={foldersState} />
     </DndProvider>
   )
 }

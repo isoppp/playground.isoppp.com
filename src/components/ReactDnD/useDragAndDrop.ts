@@ -1,7 +1,7 @@
 import { XYCoord } from 'dnd-core'
 import { useCallback, useMemo, useRef, useState } from 'react'
 
-import { DRAG_DIRECTION_THRESHOLD, MIN_ORDER } from './constants'
+import { DRAG_DIRECTION_THRESHOLD, FOLDER_PREFIX, MIN_ORDER } from './constants'
 import { FlatItem } from './data'
 import { Border, onDraggingData, Position } from './Row'
 import { collectChildFolderIds, findLastIndex, getAllChildItems } from './util'
@@ -17,7 +17,7 @@ type DragAndDropState = {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useDragAndDrop = (flatItems: FlatItem[], setFlatItems: (items: FlatItem[]) => void) => {
+export const useDragAndDrop = (flatItems: FlatItem[]) => {
   const [openFolderIds, setOpenFolderIds] = useState<string[]>([])
   const [dnd, setDnd] = useState<DragAndDropState | null>(null)
   const [realtimeOffset, setRealtimeOffset] = useState<XYCoord | null>(null)
@@ -34,7 +34,9 @@ export const useDragAndDrop = (flatItems: FlatItem[], setFlatItems: (items: Flat
   }, [])
 
   const filteredFlatItems = useMemo(() => {
-    return flatItems.filter((flatItem) => !flatItem.raw.parentId || openFolderIds.includes(flatItem.raw.parentId))
+    return flatItems.filter(
+      (flatItem) => !flatItem.raw.parentId || openFolderIds.includes(FOLDER_PREFIX + flatItem.raw.parentId),
+    )
   }, [flatItems, openFolderIds])
 
   const draggingChildIds = useMemo(() => {
@@ -260,7 +262,7 @@ export const useDragAndDrop = (flatItems: FlatItem[], setFlatItems: (items: Flat
     let newOrder = MIN_ORDER
 
     if (moveTargetState.borderType === 'surround') {
-      newParentId = targetItem.id
+      newParentId = targetItem.raw.id
       // filterから探さなくて大丈夫か？
       const lastChildReverseIndex = findLastIndex(
         flatItems,
@@ -307,7 +309,7 @@ export const useDragAndDrop = (flatItems: FlatItem[], setFlatItems: (items: Flat
       id: dnd.originalItem.raw.id,
       parentId: newParentId,
       order: newOrder,
-      insertBeforeId: insertBefore?.id ?? null,
+      insertBeforeId: insertBefore?.raw.id ?? null,
     })
 
     resetState()

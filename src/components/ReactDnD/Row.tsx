@@ -60,41 +60,28 @@ export const Row: FC<Props> = ({
       }
     },
     hover(item: DragItem, monitor) {
-      if (!ref.current) {
-        return
-      }
+      if (!ref.current) return
+
       const dragItemIndex = item.index
       const hoverIndex = index
 
       // Determine rectangle on screen
       const hoverBoundingRect = ref.current?.getBoundingClientRect()
 
-      // Get vertical middle
+      // Get vertical middle and height
       const hoverBoundingHeight = hoverBoundingRect.bottom - hoverBoundingRect.top
       const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
 
       // Determine mouse position
-      const clientOffset = monitor.getClientOffset()
-      onUpdateClientOffset(clientOffset as XYCoord)
+      const clientOffset = monitor.getClientOffset() as XYCoord
 
       // Get pixels to the top
-      const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top
+      const hoverClientY = clientOffset.y - hoverBoundingRect.top
 
-      let position: Position = 'none'
-      let isMiddle = false
-      if (hoverClientY < hoverBoundingHeight * 0.6 && hoverClientY > hoverBoundingHeight * 0.4) {
-        isMiddle = true
-      }
+      const isMiddle = hoverClientY < hoverBoundingHeight * 0.6 && hoverClientY > hoverBoundingHeight * 0.4
+      const position: Position = hoverClientY >= hoverMiddleY ? 'bottom' : 'top'
 
-      // set position
-      if (hoverClientY >= hoverMiddleY) {
-        position = 'bottom'
-      }
-      if (hoverClientY <= hoverMiddleY) {
-        position = 'top'
-      }
-
-      // Time to actually perform the action
+      onUpdateClientOffset(clientOffset)
       onDragging({
         flatItem: item.raw,
         position,
