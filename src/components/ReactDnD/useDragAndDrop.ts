@@ -4,7 +4,7 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import { DRAG_DIRECTION_THRESHOLD, MIN_ORDER } from './constants'
 import { FlatItem } from './data'
 import { Border, onDraggingData, Position } from './Row'
-import { findLastIndex, getAllChildItems } from './util'
+import { collectChildFolderIds, findLastIndex, getAllChildItems } from './util'
 
 export type Direction = 'none' | 'up' | 'down'
 
@@ -45,7 +45,9 @@ export const useDragAndDrop = (flatItems: FlatItem[], setFlatItems: (items: Flat
   const onToggleFolder = useCallback(
     (folderId: string) => {
       if (openFolderIds.includes(folderId)) {
-        setOpenFolderIds((old) => old.filter((id) => id !== folderId))
+        // フォルダを閉じる場合、その子フォルダのIDも収集して除外する
+        const childFolderIds = collectChildFolderIds(folderId, flatItems)
+        setOpenFolderIds((old) => old.filter((id) => id !== folderId && !childFolderIds.includes(id)))
       } else {
         setOpenFolderIds((old) => [...old, folderId])
       }

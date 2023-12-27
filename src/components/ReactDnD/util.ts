@@ -90,3 +90,19 @@ export function findLastIndex<T>(array: T[], predicate: (element: T | undefined)
   }
   return -1 // 要素が見つからない場合は-1を返す
 }
+
+export const collectChildFolderIds = (folderId: string, flatItems: FlatItem[]): string[] => {
+  const childFolderIds: string[] = []
+
+  const findChildFolders = (currentId: string) => {
+    flatItems.forEach((item) => {
+      if (item.type === 'folder' && item.parentId === currentId) {
+        childFolderIds.push(item.id)
+        findChildFolders(item.id)
+      }
+    })
+  }
+
+  findChildFolders(folderId)
+  return childFolderIds
+}
