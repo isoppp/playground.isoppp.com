@@ -62,6 +62,6 @@
     "scaffdog": "3.0.0",
     "storybook": "7.6.10",
     "typescript": "5.3.3",
-    "vite": "4.5.2"
+    "vite": "5.0.12"
   }
 }
