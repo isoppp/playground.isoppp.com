@@ -11,9 +11,7 @@
   "bugs": {
     "url": "https://github.com/chromaui/intro-storybook-react-template/issues"
   },
-  "engines": {
-    "pnpm": "8.15.1"
-  },
+  "packageManager": "pnpm@8.15.1",
   "license": "MIT",
   "private": true,
   "dependencies": {
@@ -29,7 +27,7 @@
     "lint": "eslint --ext ts,tsx .",
     "format": "prettier --write './**/*.{js,ts,tsx,css,scss,json,html,graphql,md}' --ignore-path .gitignore",
     "gen-c": "scaffdog generate react-component",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "7.6.12",
@@ -53,7 +51,7 @@
     "eslint-plugin-simple-import-sort": "10.0.0",
     "eslint-plugin-storybook": "0.6.15",
     "eslint-plugin-unused-imports": "3.0.0",
-    "husky": "8.0.3",
+    "husky": "9.0.10",
     "lint-staged": "15.2.1",
     "msw": "2.1.5",
     "msw-storybook-addon": "1.10.0",
