@@ -29,7 +29,7 @@
     "lint": "eslint --ext ts,tsx .",
     "format": "prettier --write './**/*.{js,ts,tsx,css,scss,json,html,graphql,md}' --ignore-path .gitignore",
     "gen-c": "scaffdog generate react-component",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "7.6.12",
