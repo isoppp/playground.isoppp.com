@@ -12,7 +12,7 @@
     "url": "https://github.com/chromaui/intro-storybook-react-template/issues"
   },
   "engines": {
-    "pnpm": "8.14.3"
+    "pnpm": "8.15.1"
   },
   "license": "MIT",
   "private": true,
@@ -32,18 +32,18 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "7.6.10",
-    "@storybook/addon-interactions": "7.6.10",
-    "@storybook/addon-links": "7.6.10",
-    "@storybook/blocks": "7.6.10",
+    "@storybook/addon-essentials": "7.6.12",
+    "@storybook/addon-interactions": "7.6.12",
+    "@storybook/addon-links": "7.6.12",
+    "@storybook/blocks": "7.6.12",
     "@storybook/jest": "0.2.3",
-    "@storybook/react": "7.6.10",
-    "@storybook/react-vite": "7.6.10",
+    "@storybook/react": "7.6.12",
+    "@storybook/react-vite": "7.6.12",
     "@storybook/testing-library": "0.2.2",
-    "@types/react": "18.2.48",
+    "@types/react": "18.2.52",
     "@types/react-dom": "18.2.18",
-    "@typescript-eslint/eslint-plugin": "6.19.1",
-    "@typescript-eslint/parser": "6.19.1",
+    "@typescript-eslint/eslint-plugin": "6.20.0",
+    "@typescript-eslint/parser": "6.20.0",
     "@vitejs/plugin-react": "4.2.1",
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
@@ -54,13 +54,13 @@
     "eslint-plugin-storybook": "0.6.15",
     "eslint-plugin-unused-imports": "3.0.0",
     "husky": "8.0.3",
-    "lint-staged": "15.2.0",
-    "msw": "2.1.4",
+    "lint-staged": "15.2.1",
+    "msw": "2.1.5",
     "msw-storybook-addon": "1.10.0",
     "prettier": "3.2.4",
     "prop-types": "15.8.1",
     "scaffdog": "3.0.0",
-    "storybook": "7.6.10",
+    "storybook": "7.6.12",
     "typescript": "5.3.3",
     "vite": "5.0.12"
   }
