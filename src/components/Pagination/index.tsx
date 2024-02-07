@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { FC, Fragment } from 'react'
 
 import { usePagination } from './usePagination'
@@ -20,26 +21,19 @@ export const Pagination: FC<PaginationProps> = ({ perPage, currentPage, totalCou
 
   return (
     <div className="flex items-center gap-x-2 text-sm">
-      <div>
-        {disabledPrev} {'<'}
-      </div>
+      <div className={clsx(disabledPrev && 'bg-red-100 opacity-50')}>{'<'}</div>
       {pageItems.map((item, i) => {
         return (
           <Fragment key={i}>
             {typeof item === 'string' ? (
               <div>{item}</div>
             ) : (
-              <div>
-                {item}
-                {currentPage === item}
-              </div>
+              <div className={clsx(currentPage === item && 'text-red-500 font-bold')}>{item}</div>
             )}
           </Fragment>
         )
       })}
-      <div>
-        {disabledNext} {'>'}
-      </div>
+      <div className={clsx(disabledNext && 'bg-gray-100 opacity-50')}>{'>'}</div>
     </div>
   )
 }

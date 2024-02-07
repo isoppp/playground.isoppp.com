@@ -27,9 +27,10 @@ export const Default: StoryObj<typeof Component> = {
       { totalCount: 200, perPage: 2, currentPage: 98 },
     ]
     return (
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col">
+        <div>This is shown by args</div>
         <Component {...args} />
-        <div className="flex flex-col gap-2 border-t">
+        <div className="flex flex-col gap-2 border-t mt-4 pt-4">
           <div>static examples...</div>
           {samples.map((props, i) => (
             <Component {...props} key={i} />
