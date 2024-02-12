@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    name: "Run eslint / type-check"
+    name: "Run eslint / type-check / test"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,3 +29,5 @@ jobs:
         run: pnpm lint
       - name: tsc
         run: pnpm type-check
+      - name: test
+        run: pnpm test
