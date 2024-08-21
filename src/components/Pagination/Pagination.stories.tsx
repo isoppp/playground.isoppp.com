@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react'
-import { range } from 'remeda'
+import { range } from 'es-toolkit'
 
 import { Pagination as Component } from './Pagination'
 
