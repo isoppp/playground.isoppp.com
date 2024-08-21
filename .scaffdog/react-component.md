@@ -15,7 +15,7 @@ import { FC } from 'react'
 type Props = {}
 
 export const {{ inputs.name | pascal }}: FC<Props> = ({}) => {
-return <div>{{ inputs.name | pascal }}</div>
+return <button type="button">{{ inputs.name | pascal }}</button>
 }
 ```
 
@@ -33,4 +33,26 @@ component: Component,
 export const Default: StoryObj<typeof Component> = {
 args: {},
 }
+```
+
+# {{ inputs.name | pascal }}/{{ inputs.name | pascal }}.spec.tsx
+
+```markdown
+import { render, screen } from '@testing-library/react'
+import { ComponentPropsWithoutRef } from 'react'
+import { describe, expect, it } from 'vitest'
+
+import { {{ inputs.name | pascal }} } from '.'
+
+type ComponentProps = ComponentPropsWithoutRef<typeof {{ inputs.name | pascal }}>
+const renderComponent = (props?: ComponentProps) => {
+render(<{{ inputs.name | pascal }} {...(props ?? {})} />)
+}
+
+describe('{{ inputs.name | pascal }}', () => {
+it('renders correctly', () => {
+renderComponent()
+expect(screen.getByRole('button')).toBeInTheDocument()
+})
+})
 ```
