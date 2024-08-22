@@ -40,7 +40,6 @@ export const Default: StoryObj<typeof Component> = {
 ```markdown
 import { render, screen } from '@testing-library/react'
 import { ComponentPropsWithoutRef } from 'react'
-import { describe, expect, it } from 'vitest'
 
 import { {{ inputs.name | pascal }} } from '.'
 
