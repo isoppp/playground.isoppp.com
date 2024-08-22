@@ -8,6 +8,7 @@ import typescriptEslint from '@typescript-eslint/eslint-plugin'
 import tsParser from '@typescript-eslint/parser'
 import react from 'eslint-plugin-react'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
+import tailwind from 'eslint-plugin-tailwindcss'
 import unusedImports from 'eslint-plugin-unused-imports'
 import globals from 'globals'
 
@@ -20,6 +21,7 @@ const compat = new FlatCompat({
 })
 
 export default [
+  ...tailwind.configs['flat/recommended'],
   ...fixupConfigRules(
     compat.extends(
       'eslint:recommended',
