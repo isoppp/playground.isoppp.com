@@ -1,7 +1,7 @@
 ---
 name: 'react-component'
-root: './src/components'
-output: '**/*'
+root: './src'
+output: '**/components'
 ignore: []
 questions:
   name: 'Please enter component name.(Convert to Pascal case.)'
