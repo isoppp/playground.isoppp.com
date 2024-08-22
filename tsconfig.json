@@ -14,7 +14,10 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "baseUrl": "./",
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "exclude": ["node_modules"],
   "include": ["src/**/*", "./vitest-setup.ts"]

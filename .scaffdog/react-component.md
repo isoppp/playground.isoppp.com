@@ -1,7 +1,7 @@
 ---
 name: 'react-component'
-root: './src/components'
-output: '**/*'
+root: './src'
+output: '**/components'
 ignore: []
 questions:
   name: 'Please enter component name.(Convert to Pascal case.)'
@@ -15,7 +15,7 @@ import { FC } from 'react'
 type Props = {}
 
 export const {{ inputs.name | pascal }}: FC<Props> = ({}) => {
-return <button type="button">{{ inputs.name | pascal }}</button>
+  return <button type="button">{{ inputs.name | pascal }}</button>
 }
 ```
 
@@ -27,11 +27,11 @@ import { Meta, StoryObj } from '@storybook/react'
 import { {{ inputs.name | pascal }} as Component } from './'
 
 export default {
-component: Component,
+  component: Component,
 } as Meta<typeof Component>
 
 export const Default: StoryObj<typeof Component> = {
-args: {},
+  args: {},
 }
 ```
 
@@ -40,19 +40,18 @@ args: {},
 ```markdown
 import { render, screen } from '@testing-library/react'
 import { ComponentPropsWithoutRef } from 'react'
-import { describe, expect, it } from 'vitest'
 
 import { {{ inputs.name | pascal }} } from '.'
 
 type ComponentProps = ComponentPropsWithoutRef<typeof {{ inputs.name | pascal }}>
 const renderComponent = (props?: ComponentProps) => {
-render(<{{ inputs.name | pascal }} {...(props ?? {})} />)
+  render(<{{ inputs.name | pascal }} {...(props ?? {})} />)
 }
 
 describe('{{ inputs.name | pascal }}', () => {
-it('renders correctly', () => {
-renderComponent()
-expect(screen.getByRole('button')).toBeInTheDocument()
-})
+  it('renders correctly', () => {
+    renderComponent()
+    expect(screen.getByRole('button')).toBeInTheDocument()
+  })
 })
 ```
