@@ -26,8 +26,20 @@ import { Meta, StoryObj } from '@storybook/react'
 
 import { {{ inputs.name | pascal }} as Component } from './'
 
+const description = `
+### Additional Modifications
+
+- Remove icon variant, I think icon button should be another component.
+- Add left/right icon props.
+`
+  
 export default {
   component: Component,
+  docs: {
+    description: {
+      component: description,
+    },
+  },
 } as Meta<typeof Component>
 
 export const Default: StoryObj<typeof Component> = {
@@ -44,7 +56,7 @@ import { ComponentPropsWithoutRef } from 'react'
 import { {{ inputs.name | pascal }} } from '.'
 
 type ComponentProps = ComponentPropsWithoutRef<typeof {{ inputs.name | pascal }}>
-const renderComponent = (props?: ComponentProps) => {
+const renderComponent = (props?: Partial<ComponentProps>) => {
   render(<{{ inputs.name | pascal }} {...(props ?? {})} />)
 }
 
