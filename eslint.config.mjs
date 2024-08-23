@@ -22,6 +22,13 @@ const compat = new FlatCompat({
 
 export default [
   ...tailwind.configs['flat/recommended'],
+  {
+    settings: {
+      tailwindcss: {
+        callees: ['classnames', 'clsx', 'ctl', 'cn', 'tv', 'cva'],
+      },
+    },
+  },
   ...fixupConfigRules(
     compat.extends(
       'eslint:recommended',
