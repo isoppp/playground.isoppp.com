@@ -29,8 +29,7 @@ import { {{ inputs.name | pascal }} as Component } from './'
 const description = `
 ### Additional Modifications
 
-- Remove icon variant, I think icon button should be another component.
-- Add left/right icon props.
+- 
 `
   
 export default {

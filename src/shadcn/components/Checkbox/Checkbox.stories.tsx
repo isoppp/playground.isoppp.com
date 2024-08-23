@@ -1,6 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react'
+import { fn } from '@storybook/test'
 
-import { Label as Component } from './'
+import { Checkbox as Component } from './'
 
 const description = `
 ### Additional Modifications
@@ -19,18 +20,8 @@ export default {
 
 export const Default: StoryObj<typeof Component> = {
   args: {
-    children: 'Label',
-  },
-}
-
-export const AsChildPatternWithCheckbox: StoryObj<typeof Component> = {
-  args: {
-    asChild: true,
-    children: (
-      <label className="flex items-center gap-4">
-        <span>Label</span>
-        <input type="checkbox" />
-      </label>
-    ),
+    defaultChecked: true,
+    onCheckedChange: fn(),
+    disabled: false,
   },
 }
