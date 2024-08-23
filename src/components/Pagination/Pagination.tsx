@@ -29,7 +29,7 @@ export const Pagination: FC<PaginationProps> = ({ totalPage, currentPage, siblin
           )
         } else {
           return (
-            <div key={i} className={clsx(commonItemClassNames, currentPage === item.value && 'text-red-500 font-bold')}>
+            <div key={i} className={clsx(commonItemClassNames, currentPage === item.value && 'font-bold text-red-500')}>
               {item.value}
             </div>
           )
