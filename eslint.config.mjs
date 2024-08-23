@@ -72,6 +72,8 @@ export default [
           ignoreRestSiblings: true,
         },
       ],
+
+      '@typescript-eslint/no-empty-object-type': 'off',
     },
   },
   {
