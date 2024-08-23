@@ -14,12 +14,12 @@ export const DemoAllPatterns: StoryObj<typeof Component> = {
       <div className="grid gap-4">
         {range(1, 3).map((siblingCount) => {
           return (
-            <div key={siblingCount} className="p-4 border">
+            <div key={siblingCount} className="border p-4">
               <div>siblingCount: {siblingCount}</div>
               <div>
                 {range(1, 13).map((totalPage) => {
                   return (
-                    <div key={totalPage} className="p-4 border">
+                    <div key={totalPage} className="border p-4">
                       <div className="text-sm">totalPage: {totalPage}</div>
                       <div>
                         {range(1, totalPage + 1).map((current) => (
