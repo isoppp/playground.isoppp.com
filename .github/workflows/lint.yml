@@ -30,3 +30,32 @@ jobs:
         run: pnpm type-check
       - name: test
         run: pnpm test
+  storybook:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.tool-versions'
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Build Storybook
+        run: pnpm build-storybook --quiet
+
+      - name: Add package for storybook test
+        run: pnpm add -D concurrently wait-on http-server
+      - name: Install Playwright
+        run: pnpm playwright install chromium # or --with-deps
+      - name: Serve Storybook and run tests
+        run: |
+          pnpm concurrently -k -s first -n "SB,TEST" -c "magenta,blue" \
+          "pnpm http-server storybook-static --port 6006 --silent" \
+          "pnpm wait-on tcp:127.0.0.1:6006 && pnpm test-storybook"

@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react'
-import { fn } from '@storybook/test'
+import { expect, fn, userEvent, within } from '@storybook/test'
 
 import { Textarea as Component } from './'
 
@@ -29,7 +29,24 @@ export const Default: StoryObj<typeof Component> = {
     defaultValue: 'defaultValue',
     placeholder: 'placeholder',
     allowResize: false,
+    autoResizable: false,
+  },
+}
+
+export const Resizable: StoryObj<typeof Component> = {
+  args: {
+    onChange: fn(),
     autoResizable: true,
     minOrMaxHeightClassNames: ['min-h-16', 'max-h-40'],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    const textarea = canvas.getByRole('textbox')
+    expect(textarea).toBeInTheDocument()
+    const initialHeight = textarea.clientHeight
+    await userEvent.type(canvas.getByRole('textbox'), '{Enter}{Enter}{Enter}{Enter}')
+    const newHeight = textarea.clientHeight
+    expect(initialHeight).not.toBe(newHeight)
   },
 }
