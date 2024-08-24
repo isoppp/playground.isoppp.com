@@ -11,9 +11,11 @@ const description = `
 `
 export default {
   component: Component,
-  docs: {
-    description: {
-      component: description,
+  parameters: {
+    docs: {
+      description: {
+        component: description,
+      },
     },
   },
 } as Meta<typeof Component>

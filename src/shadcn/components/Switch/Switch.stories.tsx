@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
 
-import { Checkbox as Component } from './'
+import { Switch as Component } from './'
 
 const description = `
 ### Additional Modifications
