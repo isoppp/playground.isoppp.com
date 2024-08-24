@@ -6,14 +6,17 @@ import { Textarea as Component } from './'
 const description = `
 ### Additional Modifications
 
-- 
+- Add an auto-resize feature using the field-resizing CSS property, which is a very new API.
+  - See https://developer.mozilla.org/ja/docs/Web/CSS/field-sizing
 `
 
 export default {
   component: Component,
-  docs: {
-    description: {
-      component: description,
+  parameters: {
+    docs: {
+      description: {
+        component: description,
+      },
     },
   },
 } as Meta<typeof Component>
@@ -26,6 +29,7 @@ export const Default: StoryObj<typeof Component> = {
     defaultValue: 'defaultValue',
     placeholder: 'placeholder',
     allowResize: false,
-    autoResizable: false,
+    autoResizable: true,
+    minOrMaxHeightClassNames: ['min-h-16', 'max-h-40'],
   },
 }
