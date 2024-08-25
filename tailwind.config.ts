@@ -54,6 +54,22 @@ const config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       keyframes: {
+        'fade-in': {
+          '0%': {
+            opacity: '0',
+          },
+          '100%': {
+            opacity: '1',
+          },
+        },
+        'fade-out': {
+          '0%': {
+            opacity: '1',
+          },
+          '100%': {
+            opacity: '0',
+          },
+        },
         'accordion-down': {
           from: { height: '0' },
           to: { height: 'var(--radix-accordion-content-height)' },
@@ -64,8 +80,13 @@ const config = {
         },
       },
       animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out',
+        'accordion-down': 'accordion-down 0.15s cubic-bezier(0.22, 1, 0.36, 1)',
+        'accordion-up': 'accordion-up 0.15s cubic-bezier(0.22, 1, 0.36, 1)',
+        'fade-in': 'fade-in 0.15s cubic-bezier(0.22, 1, 0.36, 1)',
+        'fade-out': 'fade-out 0.15s cubic-bezier(0.22, 1, 0.36, 1)',
+      },
+      boxShadow: {
+        'sm-md': '0 2px 4px rgba(0, 0, 0, 0.04), 0 4px 6px rgba(0, 0, 0, 0.04)',
       },
     },
   },
