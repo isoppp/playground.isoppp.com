@@ -6,8 +6,8 @@ import { Tooltip } from '.'
 type ComponentProps = ComponentPropsWithoutRef<typeof Tooltip>
 const renderComponent = (props?: Partial<ComponentProps>) => {
   render(
-    <Tooltip content={'tooltip content'} {...(props ?? {})}>
-      <button type="button">Trigger</button>
+    <Tooltip trigger={<button type="button">Trigger</button>} {...(props ?? {})}>
+      tooltip content
     </Tooltip>,
   )
 }

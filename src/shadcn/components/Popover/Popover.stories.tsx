@@ -1,8 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react'
-import { expect, waitFor } from '@storybook/test'
-import { userEvent, within } from '@storybook/test'
+import { expect, userEvent, waitFor, within } from '@storybook/test'
+import { useState } from 'react'
 
-import { Tooltip as Component } from './'
+import { Popover as Component } from './'
 
 const description = `
 ### Additional Modifications
@@ -12,7 +12,6 @@ const description = `
   - Add fade-in, fade-out to animation
   - Add sm-md shadow to boxShadow
   - Change timing-function and duration to 0.15s and cubic-bezier(0.22, 1, 0.36, 1) in animation
-- Remove classnames related to slide animation
 - asChild is always true. user should not choose it
 
 - TODO: Investigate if it's possible to enable boxShadow transition. Currently, this is challenging because the element is removed from the DOM after closing the tooltip, which interferes with the animation.
@@ -38,7 +37,22 @@ export const Default: StoryObj<typeof Component> = {
     )
   },
   args: {
-    trigger: <button type="button">Hover me</button>,
+    trigger: <button type="button">Trigger</button>,
+    children: 'Hello, world!',
+  },
+}
+
+export const Controlled: StoryObj<typeof Component> = {
+  render: (args) => {
+    const [open, setOpen] = useState(false)
+    return (
+      <div className="p-20">
+        <Component {...args} rootProps={{ open, onOpenChange: setOpen }} />
+      </div>
+    )
+  },
+  args: {
+    trigger: <button type="button">Trigger</button>,
     children: 'Hello, world!',
   },
 }
@@ -58,9 +72,16 @@ export const Test: StoryObj<typeof Component> = {
   play: async ({ canvasElement }) => {
     const c = within(canvasElement)
 
-    await userEvent.hover(c.getByRole('button'))
+    // open popover
+    await userEvent.click(c.getByRole('button'))
     await waitFor(() => {
-      expect(c.getByTestId('tooltip-content')).toBeInTheDocument()
+      expect(document.querySelector('[data-testid=popover-content]')).toBeInTheDocument()
+    })
+
+    // close popover by clicking outside
+    await userEvent.click(document.body)
+    await waitFor(() => {
+      expect(document.querySelector('[data-testid=popover-content]')).toBeNull()
     })
   },
 }
