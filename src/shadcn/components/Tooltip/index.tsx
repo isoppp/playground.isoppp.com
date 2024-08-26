@@ -8,26 +8,24 @@ const tooltipVariants = tv({
   slots: {
     content: [
       'z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-sm-md',
-      'transition-all',
-      'animate-fade-in',
-      'data-[state=closed]:animate-fade-out',
+      'animate-fade-in data-[state=closed]:animate-fade-out',
     ],
   },
 })
 const { content: contentClassName } = tooltipVariants()
 
 interface Props extends VariantProps<typeof tooltipVariants> {
+  trigger: ReactNode
   children: ReactNode
-  content: ReactNode
   providerProps?: Pick<ComponentPropsWithoutRef<typeof TooltipPrimitive.TooltipProvider>, 'delayDuration'>
   contentProps?: Pick<ComponentPropsWithoutRef<typeof TooltipPrimitive.TooltipContent>, 'align' | 'side'>
 }
 
-export const Tooltip: FC<Props> = ({ children, content, contentProps, providerProps }) => {
+export const Tooltip: FC<Props> = ({ trigger, children, contentProps, providerProps }) => {
   return (
     <TooltipPrimitive.TooltipProvider delayDuration={0} {...(providerProps ?? {})}>
       <TooltipPrimitive.Tooltip>
-        <TooltipPrimitive.TooltipTrigger asChild>{children}</TooltipPrimitive.TooltipTrigger>
+        <TooltipPrimitive.TooltipTrigger asChild>{trigger}</TooltipPrimitive.TooltipTrigger>
         <TooltipPrimitive.TooltipContent
           data-testid="tooltip-content"
           side={'top'}
@@ -35,7 +33,7 @@ export const Tooltip: FC<Props> = ({ children, content, contentProps, providerPr
           className={cn(contentClassName())}
           {...(contentProps ?? {})}
         >
-          {content}
+          {children}
         </TooltipPrimitive.TooltipContent>
       </TooltipPrimitive.Tooltip>
     </TooltipPrimitive.TooltipProvider>
