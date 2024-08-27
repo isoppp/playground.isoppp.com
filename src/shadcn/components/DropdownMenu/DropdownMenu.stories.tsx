@@ -25,9 +25,6 @@ export default {
 
 export const Default: StoryObj<typeof Component> = {
   args: {
-    rootProps: {
-      open: true,
-    },
     trigger: <button type="button">Trigger</button>,
     title: 'Title',
     items: [
