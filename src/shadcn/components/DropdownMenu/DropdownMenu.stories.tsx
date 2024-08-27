@@ -10,6 +10,7 @@ const description = `
 
 - Simplify the component
 - Remove radio and checkbox features
+- Disable slide animation and replace with fade animation
 `
 
 export default {
