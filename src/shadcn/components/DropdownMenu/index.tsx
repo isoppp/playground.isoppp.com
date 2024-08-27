@@ -44,39 +44,39 @@ interface Props extends VariantProps<typeof dropdownMenuVariants> {
   trigger: ReactNode
 }
 
-export const DropdownMenu: FC<Props> = ({ title, items, trigger }) => {
-  const renderMenuItem = (menuItem: DropdownMenuItem, index: number) => {
-    if (menuItem.subMenuItems) {
-      return (
-        <DropdownMenuPrimitive.Sub key={index}>
-          <DropdownMenuPrimitive.SubTrigger className={subTrigger()}>
-            {menuItem.icon && <span className={icon()}>{menuItem.icon}</span>}
-            {menuItem.label}
-            <ChevronRight className={chevron()} />
-          </DropdownMenuPrimitive.SubTrigger>
-          <DropdownMenuPrimitive.Portal>
-            <DropdownMenuPrimitive.SubContent className={base()}>
-              {menuItem.subMenuItems.map((childItem, childIndex) => renderMenuItem(childItem, childIndex))}
-            </DropdownMenuPrimitive.SubContent>
-          </DropdownMenuPrimitive.Portal>
-        </DropdownMenuPrimitive.Sub>
-      )
-    }
+const renderMenuItem = (menuItem: DropdownMenuItem, index: number): React.ReactNode => {
+  const commonContent = (
+    <>
+      {menuItem.icon && <span className={icon()}>{menuItem.icon}</span>}
+      {menuItem.label}
+    </>
+  )
 
+  if (menuItem.subMenuItems) {
     return (
-      <DropdownMenuPrimitive.Item
-        key={index}
-        className={item()}
-        disabled={menuItem.disabled}
-        onClick={menuItem.onClick}
-      >
-        {menuItem.icon && <span className={icon()}>{menuItem.icon}</span>}
-        {menuItem.label}
-        {menuItem.shortcut && <span className={shortcut()}>{menuItem.shortcut}</span>}
-      </DropdownMenuPrimitive.Item>
+      <DropdownMenuPrimitive.Sub key={index}>
+        <DropdownMenuPrimitive.SubTrigger className={subTrigger()}>
+          {commonContent}
+          <ChevronRight className={chevron()} />
+        </DropdownMenuPrimitive.SubTrigger>
+        <DropdownMenuPrimitive.Portal>
+          <DropdownMenuPrimitive.SubContent className={base()}>
+            {menuItem.subMenuItems.map((childItem, childIndex) => renderMenuItem(childItem, childIndex))}
+          </DropdownMenuPrimitive.SubContent>
+        </DropdownMenuPrimitive.Portal>
+      </DropdownMenuPrimitive.Sub>
     )
   }
 
+  return (
+    <DropdownMenuPrimitive.Item key={index} className={item()} disabled={menuItem.disabled} onClick={menuItem.onClick}>
+      {commonContent}
+      {menuItem.shortcut && <span className={shortcut()}>{menuItem.shortcut}</span>}
+    </DropdownMenuPrimitive.Item>
+  )
+}
+
+export const DropdownMenu: FC<Props> = ({ title, items, trigger }) => {
   return (
     <DropdownMenuPrimitive.Root>
       <DropdownMenuPrimitive.Trigger asChild>{trigger}</DropdownMenuPrimitive.Trigger>
