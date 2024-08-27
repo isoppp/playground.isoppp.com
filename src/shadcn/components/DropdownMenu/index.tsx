@@ -1,7 +1,7 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import { ChevronRight } from 'lucide-react'
 import * as React from 'react'
-import { FC, ReactNode } from 'react'
+import { ComponentPropsWithoutRef, FC, ReactNode } from 'react'
 import { tv, VariantProps } from 'tailwind-variants'
 
 const dropdownMenuVariants = tv({
@@ -38,12 +38,6 @@ interface DropdownMenuItem {
   subMenuItems?: DropdownMenuItem[]
 }
 
-interface Props extends VariantProps<typeof dropdownMenuVariants> {
-  title?: string
-  items: DropdownMenuItem[]
-  trigger: ReactNode
-}
-
 const renderMenuItem = (menuItem: DropdownMenuItem, index: number): React.ReactNode => {
   const commonContent = (
     <>
@@ -76,9 +70,16 @@ const renderMenuItem = (menuItem: DropdownMenuItem, index: number): React.ReactN
   )
 }
 
-export const DropdownMenu: FC<Props> = ({ title, items, trigger }) => {
+interface Props extends VariantProps<typeof dropdownMenuVariants> {
+  title?: string
+  items: DropdownMenuItem[]
+  trigger: ReactNode
+  rootProps?: Pick<ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Root>, 'open' | 'onOpenChange'>
+}
+
+export const DropdownMenu: FC<Props> = ({ title, items, trigger, rootProps }) => {
   return (
-    <DropdownMenuPrimitive.Root>
+    <DropdownMenuPrimitive.Root {...rootProps}>
       <DropdownMenuPrimitive.Trigger asChild>{trigger}</DropdownMenuPrimitive.Trigger>
       <DropdownMenuPrimitive.Portal>
         <DropdownMenuPrimitive.Content className={base()}>
