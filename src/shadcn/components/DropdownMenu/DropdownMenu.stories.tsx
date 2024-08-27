@@ -1,6 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react'
-import { expect, userEvent, waitFor } from '@storybook/test'
-import { fn, within } from '@storybook/test'
+import { expect, fn, userEvent, waitFor, within } from '@storybook/test'
 import { User } from 'lucide-react'
 
 import { DropdownMenu as Component } from './'
@@ -26,6 +25,9 @@ export default {
 
 export const Default: StoryObj<typeof Component> = {
   args: {
+    rootProps: {
+      open: true,
+    },
     trigger: <button type="button">Trigger</button>,
     title: 'Title',
     items: [
@@ -104,12 +106,16 @@ export const Test1: StoryObj<typeof Component> = {
     // sub menu
     await waitFor(() => {
       expect(c.getByRole('button', { name: 'Trigger' })).toBeInTheDocument()
+      expect(c.getByRole('button', { name: 'Trigger' })).not.toBeDisabled()
     })
     await userEvent.click(c.getByRole('button', { name: 'Trigger' }))
     await userEvent.hover(doc.getByRole('menuitem', { name: 'Item 2' }))
 
     await waitFor(() => {
       expect(doc.getByRole('menuitem', { name: 'Sub Item 1' })).toBeInTheDocument()
+
+      // it seems that pointer-events: none is applied during the animation, so we need to wait for it to finish
+      expect(window.getComputedStyle(doc.getByRole('menuitem', { name: 'Sub Item 1' })).pointerEvents).toBe('auto')
     })
 
     await userEvent.click(doc.getByRole('menuitem', { name: 'Sub Item 1' }))
