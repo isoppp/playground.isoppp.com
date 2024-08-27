@@ -44,6 +44,7 @@ export const Default: StoryObj<typeof Component> = {
 }
 
 export const Test: StoryObj<typeof Component> = {
+  tags: ['!autodocs'],
   render: (args) => {
     return (
       <div className="p-20">
