@@ -28,6 +28,9 @@ export default [
         callees: ['classnames', 'clsx', 'ctl', 'cn', 'tv', 'cva'],
       },
     },
+    rules: {
+      'tailwindcss/no-custom-classname': 'off',
+    },
   },
   ...fixupConfigRules(
     compat.extends(
