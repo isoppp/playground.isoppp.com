@@ -1,6 +1,6 @@
 import * as ToastPrimitives from '@radix-ui/react-toast'
 import { X } from 'lucide-react'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import * as React from 'react'
 import { tv } from 'tailwind-variants'
 
@@ -36,7 +36,12 @@ const toastVariants = tv({
 })
 
 export const Toast: FC = () => {
-  const { toasts } = useToast()
+  const { toasts, dismiss } = useToast()
+
+  useEffect(() => {
+    toasts.forEach((t) => dismiss(t.id))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <ToastPrimitives.Provider>
@@ -46,9 +51,13 @@ export const Toast: FC = () => {
         return (
           <ToastPrimitives.Root key={id} className={className.base()} {...rootProps}>
             <div className="grid gap-1">
-              {title && <ToastPrimitives.Title className={className.title()}>{title}</ToastPrimitives.Title>}
+              {title && (
+                <ToastPrimitives.Title className={className.title()} data-testid="toast-title">
+                  {title}
+                </ToastPrimitives.Title>
+              )}
               {description && (
-                <ToastPrimitives.Description className={className.description()}>
+                <ToastPrimitives.Description className={className.description()} data-testid="toast-description">
                   {description}
                 </ToastPrimitives.Description>
               )}
