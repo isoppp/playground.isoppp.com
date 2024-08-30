@@ -27,7 +27,7 @@ const options = Array.from({ length: 100 }, () => ({
 export const Default: StoryObj<typeof Component> = {
   args: {
     options,
-    value: options[50].value,
+    value: options[50]?.value,
     onChange: fn(),
   },
 }

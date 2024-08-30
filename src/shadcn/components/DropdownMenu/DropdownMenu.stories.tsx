@@ -98,7 +98,7 @@ export const Test1: StoryObj<typeof Component> = {
 
     // click event
     await userEvent.click(doc.getByRole('menuitem', { name: 'Item 1' }))
-    await expect(args.items[0].onClick).toHaveBeenCalledOnce()
+    await expect(args.items[0]?.onClick).toHaveBeenCalledOnce()
 
     // sub menu
     await waitFor(() => {
@@ -116,6 +116,6 @@ export const Test1: StoryObj<typeof Component> = {
     })
 
     await userEvent.click(doc.getByRole('menuitem', { name: 'Sub Item 1' }))
-    await expect(args.items[1].subMenuItems?.[0].onClick).toHaveBeenCalledOnce()
+    await expect(args.items[1]?.subMenuItems?.[0]?.onClick).toHaveBeenCalledOnce()
   },
 }
