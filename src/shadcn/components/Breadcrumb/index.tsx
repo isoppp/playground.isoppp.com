@@ -1,6 +1,5 @@
 import { ChevronRight } from 'lucide-react'
-import * as React from 'react'
-import { FC, Fragment } from 'react'
+import { FC, Fragment, ReactNode } from 'react'
 
 export type BreadcrumbItem = {
   label: string
@@ -9,7 +8,7 @@ export type BreadcrumbItem = {
 
 type Props = {
   items: BreadcrumbItem[]
-  separator?: React.ReactNode
+  separator?: ReactNode
 }
 
 export const Breadcrumb: FC<Props> = ({ items, separator }) => {

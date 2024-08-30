@@ -1,6 +1,5 @@
 import { Slot } from '@radix-ui/react-slot'
-import { ButtonHTMLAttributes } from 'react'
-import * as React from 'react'
+import { ButtonHTMLAttributes, forwardRef } from 'react'
 import { tv, VariantProps } from 'tailwind-variants'
 
 import { cn } from '@/shadcn/utils'
@@ -43,7 +42,7 @@ export interface ButtonProps
   rightIcon?: React.ReactNode
 }
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant, size, asChild = false, children, leftIcon, rightIcon, ...props }, ref) => {
     const Component = asChild ? Slot : 'button'
     return (

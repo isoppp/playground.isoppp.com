@@ -1,6 +1,5 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import { ChevronRight } from 'lucide-react'
-import * as React from 'react'
 import { ComponentPropsWithoutRef, FC, ReactNode } from 'react'
 import { tv, VariantProps } from 'tailwind-variants'
 
@@ -38,7 +37,7 @@ interface DropdownMenuItem {
   subMenuItems?: DropdownMenuItem[]
 }
 
-const renderMenuItem = (menuItem: DropdownMenuItem, index: number): React.ReactNode => {
+const renderMenuItem = (menuItem: DropdownMenuItem, index: number): ReactNode => {
   const commonContent = (
     <>
       {menuItem.icon && <span className={icon()}>{menuItem.icon}</span>}

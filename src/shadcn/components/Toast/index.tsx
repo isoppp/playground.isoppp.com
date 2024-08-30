@@ -1,7 +1,6 @@
 import * as ToastPrimitives from '@radix-ui/react-toast'
 import { X } from 'lucide-react'
-import { FC, useEffect } from 'react'
-import * as React from 'react'
+import { ComponentPropsWithoutRef, ElementRef, FC, forwardRef, useEffect } from 'react'
 import { tv } from 'tailwind-variants'
 
 import { cn } from '@/shadcn/utils'
@@ -74,9 +73,9 @@ export const Toast: FC = () => {
   )
 }
 
-export const ToastAction = React.forwardRef<
-  React.ElementRef<typeof ToastPrimitives.Action>,
-  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Action>
+export const ToastAction = forwardRef<
+  ElementRef<typeof ToastPrimitives.Action>,
+  ComponentPropsWithoutRef<typeof ToastPrimitives.Action>
 >(({ className, ...props }, ref) => {
   const { action } = toastVariants()
   return <ToastPrimitives.Action ref={ref} className={cn(action(), className)} {...props} />

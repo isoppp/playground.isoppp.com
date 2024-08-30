@@ -1,5 +1,4 @@
-import { CSSProperties } from 'react'
-import * as React from 'react'
+import { CSSProperties, forwardRef } from 'react'
 
 import { cn } from '@/shadcn/utils'
 
@@ -10,7 +9,7 @@ interface Props {
 }
 export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement>, Props {}
 
-const Textarea = React.forwardRef<
+const Textarea = forwardRef<
   HTMLTextAreaElement,
   Pick<
     TextareaProps,
