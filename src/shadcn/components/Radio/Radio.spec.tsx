@@ -30,8 +30,11 @@ describe('Radio', () => {
   it('works correctly', async () => {
     const { onValueChange } = renderComponent()
 
+    const radio = screen.getAllByRole('radio')[1]
+    if (!radio) throw new Error('Radio not found')
+
     await act(async () => {
-      await userEvent.click(screen.getAllByRole('radio')[1])
+      await userEvent.click(radio)
     })
     expect(onValueChange).toBeCalledWith('2')
   })

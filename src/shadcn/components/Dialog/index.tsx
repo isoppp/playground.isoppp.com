@@ -1,7 +1,6 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 import { ComponentPropsWithoutRef, FC, ReactNode } from 'react'
-import * as React from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 
 const dialogVariants = tv({
@@ -9,7 +8,7 @@ const dialogVariants = tv({
     overlay:
       'fixed inset-0 z-50 bg-black/60 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
     content: [
-      'fixed left-[50%] top-[50%] z-50 grid max-h-[90dvh] w-full max-w-[90vw] translate-x-[-50%] translate-y-[-50%] gap-4 overflow-y-auto rounded-lg border bg-background p-4 shadow-lg duration-200 md:max-w-lg',
+      'left-1/ 2 fixed top-1/2 z-50 grid max-h-[90dvh] w-full max-w-[90vw] -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto rounded-lg border bg-background p-4 shadow-lg duration-200 md:max-w-lg',
       'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
     ],
     close: [

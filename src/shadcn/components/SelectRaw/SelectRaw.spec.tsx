@@ -39,7 +39,10 @@ describe('SelectRaw', () => {
     })
     expect(screen.getByRole('combobox')).toBeInTheDocument()
 
-    await userEvent.selectOptions(screen.getByRole('combobox'), [screen.getAllByRole('option')[1]])
+    const option = screen.getAllByRole('option')[1]
+    if (!option) throw new Error('Option not found')
+
+    await userEvent.selectOptions(screen.getByRole('combobox'), [option])
     expect(onChange).toBeCalledWith('value2')
   })
 })

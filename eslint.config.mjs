@@ -83,7 +83,8 @@ export default [
         },
       ],
 
-      '@typescript-eslint/no-empty-object-type': 'off',
+      '@typescript-eslint/no-unused-expressions': ['error', { allowShortCircuit: true }],
+      '@typescript-eslint/no-empty-object-type': ['error', { allowInterfaces: 'always' }],
     },
   },
   {

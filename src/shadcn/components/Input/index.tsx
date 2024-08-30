@@ -1,10 +1,10 @@
-import * as React from 'react'
+import { forwardRef, InputHTMLAttributes } from 'react'
 
 import { cn } from '@/shadcn/utils'
 
 export interface InputProps
   extends Pick<
-    React.InputHTMLAttributes<HTMLInputElement>,
+    InputHTMLAttributes<HTMLInputElement>,
     | 'type'
     | 'onChange'
     | 'onBlur'
@@ -18,7 +18,7 @@ export interface InputProps
     | 'autoComplete'
   > {}
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(({ type, ...props }, ref) => {
+const Input = forwardRef<HTMLInputElement, InputProps>(({ type, ...props }, ref) => {
   return (
     <input
       type={type}

@@ -1,7 +1,7 @@
 import { userEvent } from '@storybook/test'
 import { act, render, screen } from '@testing-library/react'
 
-import * as Tabs from '@/shadcn/components/Tabs/index'
+import * as Tabs from '.'
 
 const renderUnControlledComponent = () => {
   render(
