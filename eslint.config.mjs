@@ -6,6 +6,7 @@ import { FlatCompat } from '@eslint/eslintrc'
 import js from '@eslint/js'
 import typescriptEslint from '@typescript-eslint/eslint-plugin'
 import tsParser from '@typescript-eslint/parser'
+import jsxA11y from 'eslint-plugin-jsx-a11y'
 import react from 'eslint-plugin-react'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import tailwind from 'eslint-plugin-tailwindcss'
@@ -30,6 +31,16 @@ export default [
     },
     rules: {
       'tailwindcss/no-custom-classname': 'off',
+    },
+  },
+  {
+    plugins: {
+      'jsx-a11y': jsxA11y,
+    },
+    rules: {
+      ...jsxA11y.configs.recommended.rules,
+      'jsx-a11y/no-noninteractive-element-to-interactive-role': 'off',
+      'jsx-a11y/label-has-associated-control': 'off',
     },
   },
   ...fixupConfigRules(
