@@ -1,8 +1,9 @@
 import { userEvent } from '@storybook/test'
 import { render, screen } from '@testing-library/react'
+import { Plus } from 'lucide-react'
 import { ComponentPropsWithoutRef } from 'react'
 
-import { Button } from '.'
+import { Button, Button as Component } from '.'
 
 type ComponentProps = ComponentPropsWithoutRef<typeof Button>
 const renderComponent = (props?: ComponentProps) => {
@@ -11,13 +12,26 @@ const renderComponent = (props?: ComponentProps) => {
 
 describe('Button', () => {
   it('renders correctly', () => {
-    renderComponent({
-      leftIcon: <span data-testid="left">left icon</span>,
-      rightIcon: <span data-testid="right">right icon</span>,
-    })
+    renderComponent()
     expect(screen.getByRole('button')).toBeInTheDocument()
-    expect(screen.getByTestId('left')).toBeInTheDocument()
-    expect(screen.getByTestId('right')).toBeInTheDocument()
+  })
+
+  it('asChild works correctly', async () => {
+    const onClick = vitest.fn()
+    render(
+      <Component asChild onClick={onClick}>
+        <button>
+          <Plus data-testid="plus1" />
+          <span>Button</span>
+          <Plus data-testid="plus2" />
+        </button>
+      </Component>,
+    )
+    expect(screen.getByTestId('plus1')).toBeInTheDocument()
+    expect(screen.getByTestId('plus2')).toBeInTheDocument()
+    expect(screen.getByRole('button')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button'))
+    expect(onClick).toHaveBeenCalledOnce()
   })
 
   it('can handle onClick event', async () => {

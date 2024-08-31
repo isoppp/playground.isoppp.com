@@ -5,6 +5,7 @@ import { cn } from '@/shadcn/utils'
 export interface InputProps
   extends Pick<
     InputHTMLAttributes<HTMLInputElement>,
+    | 'name'
     | 'type'
     | 'onChange'
     | 'onBlur'

@@ -18,5 +18,4 @@ To copy and use components you would need...
   - Create vitest-setup.ts
   - Add `"./vitest-setup.ts` to include
   - Add `"types": ["vitest/globals"]` to include field in tsconfig
-- `react-icons` and `@faker-js/faker` to compilerOptions in tsconfig
 - You may need Storybook setup

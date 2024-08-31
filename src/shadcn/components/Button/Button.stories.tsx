@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react'
-import { FaPlus } from 'react-icons/fa'
+import { Plus } from 'lucide-react'
 
 import { Button as Component } from './'
 
@@ -28,10 +28,20 @@ export const _Patterns: StoryObj<typeof Component> = {
         <Component>Button</Component>
       </div>
       <div>
-        <Component leftIcon={<FaPlus />}>Button</Component>
+        <Component asChild>
+          <button>
+            <Plus />
+            <span>Button</span>
+          </button>
+        </Component>
       </div>
       <div>
-        <Component rightIcon={<FaPlus />}>Button</Component>
+        <Component asChild>
+          <button>
+            <span>Button</span>
+            <Plus />
+          </button>
+        </Component>
       </div>
     </div>
   ),

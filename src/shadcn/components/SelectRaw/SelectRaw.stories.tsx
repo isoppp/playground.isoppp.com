@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker'
 import { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
 
@@ -20,10 +19,12 @@ export default {
   },
 } as Meta<typeof Component>
 
-const options = Array.from({ length: 100 }, () => ({
-  label: faker.commerce.product(),
-  value: faker.string.nanoid(),
+const options = Array.from({ length: 100 }, (_, i) => ({
+  label: 'Select Item ' + (i + 1),
+  value: window.crypto.randomUUID(),
 }))
+
+console.log(options)
 export const Default: StoryObj<typeof Component> = {
   args: {
     options,
