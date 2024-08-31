@@ -24,7 +24,6 @@ const options = Array.from({ length: 100 }, (_, i) => ({
   value: window.crypto.randomUUID(),
 }))
 
-console.log(options)
 export const Default: StoryObj<typeof Component> = {
   args: {
     options,
