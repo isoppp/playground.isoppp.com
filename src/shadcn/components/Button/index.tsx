@@ -36,7 +36,7 @@ export const buttonVariants = tv({
 })
 
 export interface ButtonProps
-  extends Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick' | 'children'>,
+  extends Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick' | 'children' | 'name' | 'type'>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
 }

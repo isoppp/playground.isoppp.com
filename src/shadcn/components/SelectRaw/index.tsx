@@ -13,7 +13,7 @@ type Props = {
 
 export const SelectRaw = forwardRef<
   ElementRef<'select'>,
-  Props & Pick<ComponentPropsWithoutRef<'select'>, 'onChange' | 'value' | 'defaultValue'>
+  Props & Pick<ComponentPropsWithoutRef<'select'>, 'onChange' | 'value' | 'defaultValue' | 'name'>
 >(({ options, ...props }, ref) => (
   <div className="relative w-full">
     <select
