@@ -22,6 +22,7 @@ export default {
 
 export const Default: StoryObj<typeof Component> = {
   args: {
+    label: 'Label',
     defaultChecked: true,
     onCheckedChange: fn(),
     disabled: false,
