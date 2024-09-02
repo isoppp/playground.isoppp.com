@@ -10,7 +10,7 @@ export const Default: StoryObj<typeof Component> = {
   args: {
     wrappers: [
       ({ children }) => (
-        <div style={{ background: 'blur' }} className="p-4">
+        <div style={{ background: 'blue' }} className="p-4">
           {children}
         </div>
       ),
