@@ -1,0 +1,43 @@
+/* The code itself*/
+img {
+  animation: 0.1s ani infinite;
+  filter: drop-shadow(2px 0 1px red) drop-shadow(-2px 0 1px cyan);
+
+  &:hover {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes ani {
+  0% {
+    filter: none;
+  }
+  33% {
+    filter: drop-shadow(-2px 0 1px red) drop-shadow(2px 0 1px cyan);
+  }
+  66% {
+    filter: drop-shadow(2px 0 1px red) drop-shadow(-2px 0 1px cyan);
+  }
+  100% {
+    filter: none;
+  }
+}
+
+.text {
+  font-size: 120px;
+  text-align: center;
+}
+
+.animate {
+  animation: 0.3s ani infinite;
+}
+
+div.static {
+  text-shadow:
+    4px 0 0 red,
+    -4px 0 0 cyan;
+}
+
+svg.static {
+  filter: drop-shadow(4px 0 1px red) drop-shadow(-4px 0 1px cyan);
+}
