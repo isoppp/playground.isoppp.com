@@ -1,4 +1,5 @@
-import { CSSProperties, forwardRef } from 'react'
+import type { CSSProperties } from 'react'
+import { forwardRef } from 'react'
 
 import { cn } from '@/shadcn/utils'
 

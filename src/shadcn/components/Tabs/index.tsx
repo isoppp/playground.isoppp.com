@@ -1,6 +1,7 @@
 import * as TabsPrimitive from '@radix-ui/react-tabs'
-import { ComponentPropsWithoutRef, FC } from 'react'
-import { tv, VariantProps } from 'tailwind-variants'
+import type { ComponentPropsWithoutRef, FC } from 'react'
+import type { VariantProps } from 'tailwind-variants'
+import { tv } from 'tailwind-variants'
 
 import { cn } from '@/shadcn/utils'
 

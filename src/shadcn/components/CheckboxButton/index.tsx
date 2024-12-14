@@ -1,5 +1,6 @@
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
-import { ComponentPropsWithoutRef, ElementRef, forwardRef, ReactNode } from 'react'
+import type { ComponentPropsWithoutRef, ElementRef, ReactNode } from 'react'
+import { forwardRef } from 'react'
 
 import { buttonVariants } from '@/shadcn/components/Button'
 import { Checkbox } from '@/shadcn/components/Checkbox'

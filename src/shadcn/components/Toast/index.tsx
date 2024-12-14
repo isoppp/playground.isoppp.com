@@ -1,6 +1,7 @@
 import * as ToastPrimitives from '@radix-ui/react-toast'
 import { X } from 'lucide-react'
-import { ComponentPropsWithoutRef, ElementRef, FC, forwardRef, useEffect } from 'react'
+import type { ComponentPropsWithoutRef, ElementRef, FC } from 'react'
+import { forwardRef, useEffect } from 'react'
 import { tv } from 'tailwind-variants'
 
 import { cn } from '@/shadcn/utils'

@@ -1,7 +1,7 @@
 import { userEvent } from '@storybook/test'
 import { render, screen } from '@testing-library/react'
 import { Plus } from 'lucide-react'
-import { ComponentPropsWithoutRef } from 'react'
+import type { ComponentPropsWithoutRef } from 'react'
 
 import { Button, Button as Component } from '.'
 

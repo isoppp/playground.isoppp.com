@@ -1,5 +1,6 @@
 import * as SwitchPrimitives from '@radix-ui/react-switch'
-import { ComponentPropsWithoutRef, ElementRef, forwardRef } from 'react'
+import type { ComponentPropsWithoutRef, ElementRef } from 'react'
+import { forwardRef } from 'react'
 
 import { cn } from '@/shadcn/utils'
 

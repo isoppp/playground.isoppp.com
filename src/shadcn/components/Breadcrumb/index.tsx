@@ -1,5 +1,6 @@
 import { ChevronRight } from 'lucide-react'
-import { FC, Fragment, ReactNode } from 'react'
+import type { FC, ReactNode } from 'react'
+import { Fragment } from 'react'
 
 export type BreadcrumbItem = {
   label: string
