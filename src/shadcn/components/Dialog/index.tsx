@@ -1,6 +1,6 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
-import { ComponentPropsWithoutRef, FC, ReactNode } from 'react'
+import type { ComponentPropsWithoutRef, FC, ReactNode } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 
 const dialogVariants = tv({

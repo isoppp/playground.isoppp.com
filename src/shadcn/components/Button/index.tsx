@@ -1,6 +1,8 @@
 import { Slot } from '@radix-ui/react-slot'
-import { ButtonHTMLAttributes, forwardRef } from 'react'
-import { tv, VariantProps } from 'tailwind-variants'
+import type { ButtonHTMLAttributes } from 'react'
+import { forwardRef } from 'react'
+import type { VariantProps } from 'tailwind-variants'
+import { tv } from 'tailwind-variants'
 
 import { cn } from '@/shadcn/utils'
 

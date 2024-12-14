@@ -1,9 +1,10 @@
 // Inspired by react-hot-toast library
-import { Root, ToastAction } from '@radix-ui/react-toast'
-import { ComponentPropsWithoutRef, ReactElement, ReactNode, useEffect, useState } from 'react'
-import { VariantProps } from 'tailwind-variants'
+import type { Root, ToastAction } from '@radix-ui/react-toast'
+import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from 'react'
+import { useEffect, useState } from 'react'
+import type { VariantProps } from 'tailwind-variants'
 
-import { toastVariants } from '.'
+import type { toastVariants } from '.'
 
 type ToastProps = ComponentPropsWithoutRef<typeof Root> & VariantProps<typeof toastVariants>
 type ToastActionElement = ReactElement<typeof ToastAction>

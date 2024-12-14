@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { ComponentPropsWithoutRef } from 'react'
+import type { ComponentPropsWithoutRef } from 'react'
 
 import { Label } from '.'
 

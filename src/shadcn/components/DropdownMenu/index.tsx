@@ -1,7 +1,8 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import { ChevronRight } from 'lucide-react'
-import { ComponentPropsWithoutRef, FC, ReactNode } from 'react'
-import { tv, VariantProps } from 'tailwind-variants'
+import type { ComponentPropsWithoutRef, FC, ReactNode } from 'react'
+import type { VariantProps } from 'tailwind-variants'
+import { tv } from 'tailwind-variants'
 
 const dropdownMenuVariants = tv({
   slots: {

@@ -1,6 +1,7 @@
 import * as TooltipPrimitive from '@radix-ui/react-tooltip'
-import { ComponentPropsWithoutRef, FC, ReactNode } from 'react'
-import { tv, VariantProps } from 'tailwind-variants'
+import type { ComponentPropsWithoutRef, FC, ReactNode } from 'react'
+import type { VariantProps } from 'tailwind-variants'
+import { tv } from 'tailwind-variants'
 
 import { cn } from '@/shadcn/utils'
 

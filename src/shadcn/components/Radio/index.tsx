@@ -1,6 +1,7 @@
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group'
 import { Circle } from 'lucide-react'
-import { ComponentPropsWithoutRef, ElementRef, forwardRef } from 'react'
+import type { ComponentPropsWithoutRef, ElementRef } from 'react'
+import { forwardRef } from 'react'
 
 import { cn } from '@/shadcn/utils'
 

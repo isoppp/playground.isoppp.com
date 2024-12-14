@@ -1,6 +1,7 @@
 import * as PopoverPrimitive from '@radix-ui/react-popover'
-import { ComponentPropsWithoutRef, FC, ReactNode } from 'react'
-import { tv, VariantProps } from 'tailwind-variants'
+import type { ComponentPropsWithoutRef, FC, ReactNode } from 'react'
+import type { VariantProps } from 'tailwind-variants'
+import { tv } from 'tailwind-variants'
 
 import { cn } from '@/shadcn/utils'
 

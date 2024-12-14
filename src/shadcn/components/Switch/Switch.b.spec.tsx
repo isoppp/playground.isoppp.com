@@ -1,6 +1,6 @@
 import { userEvent } from '@storybook/test'
 import { act, render, screen } from '@testing-library/react'
-import { ComponentPropsWithoutRef } from 'react'
+import type { ComponentPropsWithoutRef } from 'react'
 
 import { Switch } from '.'
 

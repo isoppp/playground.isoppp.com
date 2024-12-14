@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react'
 import { range } from 'es-toolkit'
 
 import { Pagination as Component } from './Pagination'
